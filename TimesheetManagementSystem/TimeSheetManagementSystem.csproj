@@ -1,0 +1,141 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp1.0</TargetFramework>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <PackageTargetFallback>$(PackageTargetFallback);portable-net45+win8+wp8+wpa81;</PackageTargetFallback>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="wwwroot\instructor\dist\static\css\signature-pad.css" />
+    <Content Include="wwwroot\lib\bootstrap-timepicker\css\timepicker.css" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel" Version="1.1.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Session" Version="1.1.1" />
+    <PackageReference Include="Microsoft.AspNetCore" Version="1.1.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Cookies" Version="1.1.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="1.1.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="1.1.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="1.1.2" />
+    <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="1.1.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="1.1.1" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="1.1.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer.Design" Version="1.1.1" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="1.1.0" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="1.1.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="1.1.1" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="1.0.0" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.BrowserLink" Version="1.1.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="1.1.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="1.1.1" />
+
+	</ItemGroup>
+  <ItemGroup>
+    <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="1.0.0" />
+    <DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="1.0.0" />
+    <DotNetCliToolReference Include="Microsoft.Extensions.SecretManager.Tools" Version="1.0.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="spa_instructor\node_modules\editorconfig\tests\" />
+    <Folder Include="Views\AdminHome\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="spa_instructor\node_modules\.bin\acorn" />
+    <None Include="spa_instructor\node_modules\.bin\acorn.cmd" />
+    <None Include="spa_instructor\node_modules\.bin\ansi-html" />
+    <None Include="spa_instructor\node_modules\.bin\ansi-html.cmd" />
+    <None Include="spa_instructor\node_modules\.bin\babylon" />
+    <None Include="spa_instructor\node_modules\.bin\babylon.cmd" />
+    <None Include="spa_instructor\node_modules\.bin\browserslist" />
+    <None Include="spa_instructor\node_modules\.bin\browserslist.cmd" />
+    <None Include="spa_instructor\node_modules\.bin\css-beautify" />
+    <None Include="spa_instructor\node_modules\.bin\css-beautify.cmd" />
+    <None Include="spa_instructor\node_modules\.bin\cssesc" />
+    <None Include="spa_instructor\node_modules\.bin\cssesc.cmd" />
+    <None Include="spa_instructor\node_modules\.bin\csso" />
+    <None Include="spa_instructor\node_modules\.bin\csso.cmd" />
+    <None Include="spa_instructor\node_modules\.bin\editorconfig" />
+    <None Include="spa_instructor\node_modules\.bin\editorconfig.cmd" />
+    <None Include="spa_instructor\node_modules\.bin\errno" />
+    <None Include="spa_instructor\node_modules\.bin\errno.cmd" />
+    <None Include="spa_instructor\node_modules\.bin\esparse" />
+    <None Include="spa_instructor\node_modules\.bin\esparse.cmd" />
+    <None Include="spa_instructor\node_modules\.bin\esvalidate" />
+    <None Include="spa_instructor\node_modules\.bin\esvalidate.cmd" />
+    <None Include="spa_instructor\node_modules\.bin\gulp" />
+    <None Include="spa_instructor\node_modules\.bin\gulp.cmd" />
+    <None Include="spa_instructor\node_modules\.bin\he" />
+    <None Include="spa_instructor\node_modules\.bin\he.cmd" />
+    <None Include="spa_instructor\node_modules\.bin\html-beautify" />
+    <None Include="spa_instructor\node_modules\.bin\html-beautify.cmd" />
+    <None Include="spa_instructor\node_modules\.bin\html-minifier" />
+    <None Include="spa_instructor\node_modules\.bin\html-minifier.cmd" />
+    <None Include="spa_instructor\node_modules\.bin\js-beautify" />
+    <None Include="spa_instructor\node_modules\.bin\js-beautify.cmd" />
+    <None Include="spa_instructor\node_modules\.bin\js-yaml" />
+    <None Include="spa_instructor\node_modules\.bin\js-yaml.cmd" />
+    <None Include="spa_instructor\node_modules\.bin\jsesc" />
+    <None Include="spa_instructor\node_modules\.bin\jsesc.cmd" />
+    <None Include="spa_instructor\node_modules\.bin\json5" />
+    <None Include="spa_instructor\node_modules\.bin\json5.cmd" />
+    <None Include="spa_instructor\node_modules\.bin\loose-envify" />
+    <None Include="spa_instructor\node_modules\.bin\loose-envify.cmd" />
+    <None Include="spa_instructor\node_modules\.bin\miller-rabin" />
+    <None Include="spa_instructor\node_modules\.bin\miller-rabin.cmd" />
+    <None Include="spa_instructor\node_modules\.bin\mime" />
+    <None Include="spa_instructor\node_modules\.bin\mime.cmd" />
+    <None Include="spa_instructor\node_modules\.bin\mkdirp" />
+    <None Include="spa_instructor\node_modules\.bin\mkdirp.cmd" />
+    <None Include="spa_instructor\node_modules\.bin\nopt" />
+    <None Include="spa_instructor\node_modules\.bin\nopt.cmd" />
+    <None Include="spa_instructor\node_modules\.bin\opener" />
+    <None Include="spa_instructor\node_modules\.bin\opener.cmd" />
+    <None Include="spa_instructor\node_modules\.bin\regjsparser" />
+    <None Include="spa_instructor\node_modules\.bin\regjsparser.cmd" />
+    <None Include="spa_instructor\node_modules\.bin\rimraf" />
+    <None Include="spa_instructor\node_modules\.bin\rimraf.cmd" />
+    <None Include="spa_instructor\node_modules\.bin\semver" />
+    <None Include="spa_instructor\node_modules\.bin\semver.cmd" />
+    <None Include="spa_instructor\node_modules\.bin\sha.js" />
+    <None Include="spa_instructor\node_modules\.bin\sha.js.cmd" />
+    <None Include="spa_instructor\node_modules\.bin\shjs" />
+    <None Include="spa_instructor\node_modules\.bin\shjs.cmd" />
+    <None Include="spa_instructor\node_modules\.bin\svgo" />
+    <None Include="spa_instructor\node_modules\.bin\svgo.cmd" />
+    <None Include="spa_instructor\node_modules\.bin\uglifyjs" />
+    <None Include="spa_instructor\node_modules\.bin\uglifyjs.cmd" />
+    <None Include="spa_instructor\node_modules\.bin\user-home" />
+    <None Include="spa_instructor\node_modules\.bin\user-home.cmd" />
+    <None Include="spa_instructor\node_modules\.bin\webpack" />
+    <None Include="spa_instructor\node_modules\.bin\webpack-bundle-analyzer" />
+    <None Include="spa_instructor\node_modules\.bin\webpack-bundle-analyzer.cmd" />
+    <None Include="spa_instructor\node_modules\.bin\webpack.cmd" />
+    <None Include="spa_instructor\node_modules\.bin\which" />
+    <None Include="spa_instructor\node_modules\.bin\which.cmd" />
+    <None Include="spa_instructor\node_modules\acorn-dynamic-import\node_modules\.bin\acorn" />
+    <None Include="spa_instructor\node_modules\acorn-dynamic-import\node_modules\.bin\acorn.cmd" />
+    <None Include="spa_instructor\node_modules\babel-preset-env\node_modules\.bin\browserslist" />
+    <None Include="spa_instructor\node_modules\babel-preset-env\node_modules\.bin\browserslist.cmd" />
+    <None Include="spa_instructor\node_modules\gulp\node_modules\.bin\semver" />
+    <None Include="spa_instructor\node_modules\gulp\node_modules\.bin\semver.cmd" />
+    <None Include="spa_instructor\node_modules\regjsparser\node_modules\.bin\jsesc" />
+    <None Include="spa_instructor\node_modules\regjsparser\node_modules\.bin\jsesc.cmd" />
+    <None Include="spa_instructor\node_modules\url-loader\.github\ISSUE_TEMPLATE.md" />
+    <None Include="spa_instructor\node_modules\url-loader\.github\PULL_REQUEST_TEMPLATE.md" />
+    <None Include="spa_instructor\node_modules\vinyl-fs\node_modules\.bin\strip-bom" />
+    <None Include="spa_instructor\node_modules\vinyl-fs\node_modules\.bin\strip-bom.cmd" />
+    <None Include="spa_instructor\node_modules\vue-style-loader\.github\ISSUE_TEMPLATE.md" />
+    <None Include="spa_instructor\node_modules\vue-style-loader\.github\PULL_REQUEST_TEMPLATE.md" />
+    <None Include="spa_instructor\node_modules\vuetify\.github\CONTRIBUTING.md" />
+    <None Include="spa_instructor\node_modules\vuetify\.github\ISSUE_TEMPLATE.md" />
+    <None Include="spa_instructor\node_modules\webpack\node_modules\.bin\uglifyjs" />
+    <None Include="spa_instructor\node_modules\webpack\node_modules\.bin\uglifyjs.cmd" />
+  </ItemGroup>
+
+</Project>

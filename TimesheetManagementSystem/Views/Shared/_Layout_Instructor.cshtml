@@ -1,0 +1,65 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<!-- The following two meta tags are influenced by the index.html example in signature_pad library-->
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+	<meta charset="utf-8" />
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons" rel=stylesheet type=text/css>
+    <link href=https://unpkg.com/vuetify/dist/vuetify.min.css rel=stylesheet type=text/css>
+    <link href=~/instructor/dist/static/css/app.css rel=stylesheet>
+
+    @*<link href="~/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
+    <link href="~/lib/bootstrap-table/dist/bootstrap-table.css" rel="stylesheet" />
+    <link href="~/css/site.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/sticky_footer.css" />
+    <link href="~/lib/noty/lib/noty.css" rel="stylesheet" />
+    <link href="~/lib/bootstrap-dialog/dist/css/bootstrap-dialog.css" rel="stylesheet" />
+    <link href="~/lib/bootstrap-datepicker/dist/css/bootstrap-datepicker3.css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="~/lib/bootstrap-timepicker/css/timepicker.css" />
+    <link href="~/lib/bootstrap-switch/dist/css/bootstrap3/bootstrap-switch.min.css" rel="stylesheet" />
+    <link href="~/lib/jqwidgets/jqwidgets/styles/jqx.base.css" rel="stylesheet" />
+
+
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
+    <script src="~/lib/jquery-validation/dist/additional-methods.js"></script>
+    <script src="~/lib/js-cookie/src/js.cookie.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="~/lib/bootstrap-table/dist/bootstrap-table.js"></script>
+    <script src="~/lib/noty/lib/noty.js"></script>
+    <script src="~/lib/moment/min/moment.min.js"></script>
+    <script src="~/lib/he/he.js"></script>
+
+    <script src="~/lib/bootstrap-table-contextmenu/dist/bootstrap-table-contextmenu.min.js"></script>
+    <script src="~/lib/bootstrap-dialog/dist/js/bootstrap-dialog.js"></script>
+    <script src="~/lib/bootstrap-datepicker/dist/js/bootstrap-datepicker.js"></script>
+    <script src="~/lib/bootstrap-timepicker/js/bootstrap-timepicker.js"></script>
+    <script src="~/lib/bootstrap-switch/dist/js/bootstrap-switch.min.js" type="text/javascript"></script>
+    <script src="https://unpkg.com/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="~/lib/bootstrap-material-design/dist/js/material.js"></script>
+    <script src="~/lib/bootstrap-material-design/dist/js/rip    ples.js"></script>
+    <script src="~/lib/jqwidgets/jqwidgets/jqxcore.js"></script>
+    <script src="~/lib/jqwidgets/jqwidgets/jqx-all.js"></script>*@
+
+</head>
+<body>
+@Html.AntiForgeryToken()
+
+			@if (User.Identity.IsAuthenticated)
+                {
+                    <div id="app">
+                        @RenderBody()
+                    </div>
+			}
+
+    <script type=text/javascript src=~/instructor/dist/static/js/manifest.js></script>
+    <script type=text/javascript src=~/instructor/dist/static/js/vendor.js></script>
+    <script type=text/javascript src=~/instructor/dist/static/js/app.js></script>
+
+			@RenderSection("scripts", required: false)
+</body>
+</html>
