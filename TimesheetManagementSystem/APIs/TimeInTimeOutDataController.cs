@@ -529,62 +529,49 @@ namespace TimeSheetManagementSystem.APIs
 				}
 
 				[HttpPut("UpdateTimeInTimeOutData")]
-				[ValidateAntiForgeryToken]
-				public IActionResult UpdateTimeInTimeOutData(IFormCollection inFormData)
-				{
-						//Obtain the user id of the user who has logon
-						string userLoginId = _userManager.GetUserName(User);
-						int userInfoId = Database.UserInfo.Single(input => input.LoginUserName == userLoginId).UserInfoId;
-						//Obtain the TimeSheetDetail id value to search for the correct TimeSheetDetail entity
-						long timeSheetDetailId = Int64.Parse(inFormData["timeSheetDetailId"]);
-						var oneTimeSheetDetail = Database.TimeSheetDetails
-									.Where(input => input.TimeSheetDetailId == timeSheetDetailId)
-									.Single();
-						if (String.IsNullOrEmpty(inFormData["actualTimeInHHMM"]) == false)
-						{
-								int timeInInMinutesHHMM = ConvertHHMMToMinutes(inFormData["actualTimeInHHMM"]);
-								oneTimeSheetDetail.TimeInInMinutes = timeInInMinutesHHMM;
-						}
-						if (String.IsNullOrEmpty(inFormData["actualTimeOutHHMM"]) == false)
-						{
-								int timeOutInMinutesHHMM = ConvertHHMMToMinutes(inFormData["actualTimeOutHHMM"]);
-								oneTimeSheetDetail.TimeOutInMinutes = timeOutInMinutesHHMM;
-						}
+        [ValidateAntiForgeryToken]
+        public IActionResult UpdateTimeInTimeOutData(IFormCollection inFormData)
+        {
+            string customMessage = "";
 
-						oneTimeSheetDetail.Comments = inFormData["comments"];
-						oneTimeSheetDetail.SessionSynopsisNames = inFormData["sessionSynopsisNames"];
-						oneTimeSheetDetail.UpdatedAt = DateTime.Now;
-						oneTimeSheetDetail.UpdatedByName = userLoginId;
+            //Obtain the user id of the user who has logon
+            long timeSheetDetailId = Int64.Parse(inFormData["timeSheetDetailId"]);
+            string userLoginId = _userManager.GetUserName(User);
+            int userInfoId = Database.UserInfo.Single(input => input.LoginUserName == userLoginId).UserInfoId;
+            var oneTimeSheetDetail = Database.TimeSheetDetails
+                  .Where(input => input.TimeSheetDetailId == timeSheetDetailId)
+                  .AsNoTracking().Single();
+            oneTimeSheetDetail.TimeInInMinutes = ConvertHHMMToMinutes(inFormData["actualTimeIn"]);
+            //The incoming end time information is in HH:MM format from the client-side. Need to do conversion
+            //to total minutes from midnight
+            oneTimeSheetDetail.TimeOutInMinutes = ConvertHHMMToMinutes(inFormData["actualTimeOut"]);
+            try
+            {
+                Database.TimeSheetDetails.Update(oneTimeSheetDetail);
+                Database.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                object httpFailRequestResultMessage = new { message = ex.InnerException.Message };
+                //Return a bad http request message to the client
+                return BadRequest(httpFailRequestResultMessage);
 
-						try
-						{
-								Database.TimeSheetDetails.Update(oneTimeSheetDetail);
-								Database.SaveChanges();
-						}
-						catch (Exception ex)
-						{
-								object httpFailRequestResultMessage = new { message = ex.InnerException.Message };
-								//Return a bad http request message to the client
-								return BadRequest(httpFailRequestResultMessage);
+            }//End of try .. catch block on update data
+             //Construct a custom message for the client
+             //Create a success message anonymous object which has a 
+             //Message member variable (property)
+            var successRequestResultMessage = new
+            {
+                message ="Updated time in time out data."
+            };
 
-						}//End of try .. catch block on update data
-						 //Construct a custom message for the client
-						 //Create a success message anonymous object which has a 
-						 //Message member variable (property)
-						var successRequestResultMessage = new
-						{
-								message = "Updated time in time out data."
-						};
-
-						//Create a OkObjectResult class instance, httpOkResult.
-						//When creating the object, provide the previous message object into it.
-						OkObjectResult httpOkResult =
-												new OkObjectResult(successRequestResultMessage);
-						//Send the OkObjectResult class object back to the client.
-						return httpOkResult;
-				}//End of UpdateTimeInTimeOutData
-
-
+            //Create a OkObjectResult class instance, httpOkResult.
+            //When creating the object, provide the previous message object into it.
+            OkObjectResult httpOkResult =
+                        new OkObjectResult(successRequestResultMessage);
+            //Send the OkObjectResult class object back to the client.
+            return httpOkResult;
+        }//End of UpdateTimeInTimeOutData() method
 				 //POST api/CreateTimeInTimeOutDataSignature
 				[HttpPost("CreateTimeInTimeOutDataSignature")]
         [ValidateAntiForgeryToken]
