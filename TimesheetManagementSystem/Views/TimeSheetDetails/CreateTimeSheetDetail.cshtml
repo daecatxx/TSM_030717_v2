@@ -256,10 +256,11 @@
                         var sessionSynopsisList = data;
                         $("#sessionSynopsisNamesInput").jqxComboBox({
                             source: sessionSynopsisList, multiSelect: true,
-                            width: 200, height: 30,
+                            width: 250, height: 30,
                             displayMember: 'sessionSynopsisName',
                             valueMember: 'sessionSynopsisId'
                         });
+                    
 
                         $loadSessionSynopsisNamesHandler.fail(function (data, textStatus, jqXHR) {
                             var errMsg = data.responseJSON.message
