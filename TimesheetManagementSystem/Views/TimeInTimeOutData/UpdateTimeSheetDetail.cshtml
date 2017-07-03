@@ -7,19 +7,19 @@
             <form id="dataForm" name="dataForm" role="form" class="form-horizontal">
 
                 <div class="form-group">
-                    <label class="control-label col-md-3" for="startTimeInput">Start time</label>
+                    <label class="control-label col-md-3" for="timeInInput">Time In</label>
                     <div class="col-md-4">
                         <div class="input-group bootstrap-timepicker timepicker">
-                            <input id="startTimeInput" name="startTimeInput" v-model="actualTimeInHHMM" type="text" class="form-control input-lg">
+                            <input id="timeInInput" name="timeInInput" v-model="actualTimeInHHMM" type="text" class="form-control input-lg">
                             <span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
                         </div>
                     </div>
                 </div>
-                <div class="form-group">
-                    <label class="control-label col-md-3" for="endTimeInput">End time</label>
+                <div class="form-group"> 
+                    <label class="control-label col-md-3" for="timeOutInput">Time Out </label>
                     <div class="col-md-4">
                         <div class="input-group bootstrap-timepicker timepicker">
-                            <input id="endTimeInput" name="endTimeInput" v-model="actualTimeOutHHMM" type="text" class="form-control input-lg">
+                            <input id="timeOutInput" name="timeOutInput" v-model="actualTimeOutHHMM" type="text" class="form-control input-lg">
                             <span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
                         </div>
                     </div>
@@ -54,7 +54,9 @@
     <script>
         window.timeSheetDetailId = getIdFromAddressBar();
         //Reference: http://fezvrasta.github.io/bootstrap-material-design/#getting-started
+
         $.material.init(); //Surprisingly, I need to place this command here so that it can work.
+
         function getIdFromAddressBar() {
             var urlArray = window.location.href.split('/');
             var id = urlArray[urlArray.length - 1];
@@ -70,8 +72,6 @@
             },
             mounted() {
                 this.loadOneTimeSheetDetailData();
-
-
 
 
             },
@@ -92,8 +92,8 @@
                             xhr.setRequestHeader('RequestVerificationToken', $('input[name=__RequestVerificationToken]').val());
                         },
                         data: /*function(mins)*/{
-                            actualTimeIn: $("#startTimeInput").val(),
-                            actualTimeOut: $("#endTimeInput").val(),
+                            actualTimeIn: $("#timeInInput").val(),
+                            actualTimeOut: $("#timeOutInput").val(),
                             timeSheetDetailId: that.$root._data.timeSheetDetailData.timeSheetDetailId
                         },
                         contentType: 'application/x-www-form-urlencoded',
@@ -102,7 +102,7 @@
                         new Noty({
                             text: data.message, type: 'success', layout: 'center',
                             callbacks: {
-                                onClose: function() {
+                                onClose: function () {
                                     redirect();
                                 },
                             },
@@ -148,7 +148,7 @@
                 }
             }
         });
-        $('#startTimeInput').timepicker({
+        $('#timeInInput').timepicker({
             minuteStep: 15,
             secondStep: 59,
             showInputs: false,
@@ -158,7 +158,7 @@
             showSeconds: false,
             showMeridian: true
         });
-        $('#endTimeInput').timepicker({
+        $('#timeOutInput').timepicker({
             minuteStep: 15,
             secondStep: 59,
             showInputs: false,
@@ -171,6 +171,106 @@
         function redirect() {
             window.location.replace('/TimeInTimeOutData/ManageTimeInTimeOutData');
         }
+
+        //-------------------- setup client-side validation logic --------------------------------
+        //http://stackoverflow.com/questions/18754020/bootstrap-3-with-jquery-validation-plugin
+        jQuery.validator.setDefaults({
+            highlight: function (element, errorClass, validClass) {
+                if (element.type === "radio") {
+                    this.findByName(element.name).addClass(errorClass).removeClass(validClass);
+                } else {
+                    $(element).closest('.form-group').removeClass('has-success has-feedback').addClass('has-error has-feedback');
+                    $(element).closest('.form-group').find('i.fa').remove();
+                    $(element).closest('.form-group').append('<i class="fa fa-exclamation fa-lg form-control-feedback"></i>');
+                }
+            },
+            unhighlight: function (element, errorClass, validClass) {
+                if (element.type === "radio") {
+                    this.findByName(element.name).removeClass(errorClass).addClass(validClass);
+                } else {
+                    $(element).closest('.form-group').removeClass('has-error has-feedback').addClass('has-success has-feedback');
+                    $(element).closest('.form-group').find('i.fa').remove();
+                    $(element).closest('.form-group').append('<i class="fa fa-check fa-lg form-control-feedback"></i>');
+                }
+            }
+        });
+
+        setupFormValidationRules();
+        function setupFormValidationRules() {
+
+            //////http://forums.asp.net/t/1671546.aspx?Singapore+mobile+phone+validation
+            ////jQuery.validator.addMethod('wageRateRule', function (wage_rate, element) {
+            ////    return validateDecimal(wage_rate);  
+            ////}, 'Please specify a valid value. E.g. 100 or 100.50');
+
+            jQuery.validator.addMethod("validTimeFormatRule", function (value, element) {
+                //http://stackoverflow.com/questions/23895451/jquery-validate-ignore-custom-validation-rule-if-no-value
+                if (this.optional(element) || value.length == 0) {
+                    return true;
+                }
+                else {
+                    //http://stackoverflow.com/questions/24380305/validate-date-in-dd-mm-yyyy-format-using-jquery-validate
+                    return moment(value, 'hh:mm:ss').isValid();
+                }
+            }, 'Please enter a valid time in the format hh:mm:ss');
+            jQuery.validator.addMethod("timeOutIsGreaterThanTimeInRule", function (value, element) {
+
+                var collectedTimeInValue = $('#timeInInput').val();
+                var collectedTimeOutValue = $('#timeOutInput').val();
+
+
+                //http://stackoverflow.com/questions/23895451/jquery-validate-ignore-custom-validation-rule-if-no-value
+                //https://bhavinrana.wordpress.com/2011/05/14/jquery-validation-end-date-should-be-greater-than-start-date/
+
+                //Reference: http://stackoverflow.com/questions/39687278/moment-js-how-to-initialize-from-dd-mm-yyyy-format
+                var timeIn = moment(collectedTimeInValue, 'hh:mm:ss');
+                var timeOut = moment(value, 'hh:mm:ss');
+                //alert(startTime);
+                //alert(endTime);
+                return timeOut.isAfter(timeIn, 'time')
+                //  }
+            }, 'Time Out should be greater than Time In');
+
+            $('#dataForm').validate({
+
+                rules: {
+
+                    timeInInput: {
+                        required: true,
+                        validTimeFormatRule: true
+
+                    },
+                    timeOutInput: {
+                        required: true,
+                        validTimeFormatRule: true,
+                        timeOutIsGreaterThanTimeInRule: true
+                    }
+
+                },
+                messages: {
+                    timeInInput: {
+                        required: 'Please enter Time In'
+                    },
+                    timeOutInput:
+                    {
+                        required: 'Please enter Time Out'
+                    },
+                },
+                errorPlacement: function (error, element) {
+
+                    if (element.attr('name') == 'timeInInput') {
+                        error.appendTo(element.parent('div').parent('div'));
+                    } else if (element.attr('name') == 'timeOutInput') {
+                        error.appendTo(element.parent('div').parent('div'));
+                    } else {
+                        error.insertAfter(element);
+                    }
+                }
+            });
+        }
+
+
+
     </script>
 
 }

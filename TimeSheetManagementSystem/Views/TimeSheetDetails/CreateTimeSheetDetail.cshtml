@@ -261,7 +261,7 @@
                             valueMember: 'sessionSynopsisId'
                         });
                     
-
+                    
                         $loadSessionSynopsisNamesHandler.fail(function (data, textStatus, jqXHR) {
                             var errMsg = data.responseJSON.message
                             noty({
@@ -306,5 +306,102 @@
             window.location.replace('/TimeInTimeOutData/ManageTimeInTimeOutData');
         }
 
+
+        //-------------------- setup client-side validation logic --------------------------------
+        //http://stackoverflow.com/questions/18754020/bootstrap-3-with-jquery-validation-plugin
+        jQuery.validator.setDefaults({
+            highlight: function (element, errorClass, validClass) {
+                if (element.type === "radio") {
+                    this.findByName(element.name).addClass(errorClass).removeClass(validClass);
+                } else {
+                    $(element).closest('.form-group').removeClass('has-success has-feedback').addClass('has-error has-feedback');
+                    $(element).closest('.form-group').find('i.fa').remove();
+                    $(element).closest('.form-group').append('<i class="fa fa-exclamation fa-lg form-control-feedback"></i>');
+                }
+            },
+            unhighlight: function (element, errorClass, validClass) {
+                if (element.type === "radio") {
+                    this.findByName(element.name).removeClass(errorClass).addClass(validClass);
+                } else {
+                    $(element).closest('.form-group').removeClass('has-error has-feedback').addClass('has-success has-feedback');
+                    $(element).closest('.form-group').find('i.fa').remove();
+                    $(element).closest('.form-group').append('<i class="fa fa-check fa-lg form-control-feedback"></i>');
+                }
+            }
+        });
+
+        setupFormValidationRules();
+        function setupFormValidationRules() {
+
+            //////http://forums.asp.net/t/1671546.aspx?Singapore+mobile+phone+validation
+            ////jQuery.validator.addMethod('wageRateRule', function (wage_rate, element) {
+            ////    return validateDecimal(wage_rate);  
+            ////}, 'Please specify a valid value. E.g. 100 or 100.50');
+
+            jQuery.validator.addMethod("validTimeFormatRule", function (value, element) {
+                //http://stackoverflow.com/questions/23895451/jquery-validate-ignore-custom-validation-rule-if-no-value
+                if (this.optional(element) || value.length == 0) {
+                    return true;
+                }
+                else {
+                    //http://stackoverflow.com/questions/24380305/validate-date-in-dd-mm-yyyy-format-using-jquery-validate
+                    return moment(value, 'hh:mm:ss').isValid();
+                }
+            }, 'Please enter a valid time in the format hh:mm:ss');
+            jQuery.validator.addMethod("endTimeGreaterThanStartTimeRule", function (value, element) {
+
+                var collectedStartTimeValue = $('#officialTimeInInput').val();
+                var collectedEndTimeValue = $('#officialTimeOutInput').val();
+
+
+                //http://stackoverflow.com/questions/23895451/jquery-validate-ignore-custom-validation-rule-if-no-value
+                //https://bhavinrana.wordpress.com/2011/05/14/jquery-validation-end-date-should-be-greater-than-start-date/
+
+                //Reference: http://stackoverflow.com/questions/39687278/moment-js-how-to-initialize-from-dd-mm-yyyy-format
+                var startTime = moment(collectedStartTimeValue, 'hh:mm:ss');
+                var endTime = moment(value, 'hh:mm:ss');
+                //alert(startTime);
+                //alert(endTime);
+                return endTime.isAfter(startTime, 'time')
+                //  }
+            }, 'Offical lesson End Time should be greater than Start Time.');
+
+            $('#dataForm').validate({
+
+                rules: {
+
+                    officialTimeInInput: {
+                        required: true,
+                        validTimeFormatRule: true
+
+                    },
+                    officialTimeOutInput: {
+                        required: true,
+                        validTimeFormatRule: true,
+                        endTimeGreaterThanStartTimeRule: true
+                    }
+
+                },
+                messages: {
+                    officialTimeInInput: {
+                        required: 'Please enter Official Lesson Start Time'
+                    },
+                    officialTimeOutInput:
+                    {
+                        required: 'Please enter Official Lesson End Time'
+                    },
+                },
+                errorPlacement: function (error, element) {
+
+                    if (element.attr('name') == 'officialTimeInInput') {
+                        error.appendTo(element.parent('div').parent('div'));
+                    } else if (element.attr('name') == 'officialTimeOutInput') {
+                        error.appendTo(element.parent('div').parent('div'));
+                    } else {
+                        error.insertAfter(element);
+                    }
+                }
+            });
+        }
     </script>
 }
