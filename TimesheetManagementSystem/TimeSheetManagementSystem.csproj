@@ -51,5 +51,8 @@
   <ItemGroup>
     <Folder Include="Views\AdminHome\" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="spa_instructor\src\components\updateTimeSheetSignature.vue" />
+  </ItemGroup>
 
 </Project>

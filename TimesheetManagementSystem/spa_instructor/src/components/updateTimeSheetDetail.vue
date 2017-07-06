@@ -137,7 +137,7 @@
       </v-flex>
      </v-card> 
    </v-flex>   
-   <v-flex xs12 sm6>
+   <v-flex xs12 sm6>  
     <v-card>      
       <v-flex  xs12 sm6 class="text-xs-left">
           <div class="card-title blue--text">Client signature</div>

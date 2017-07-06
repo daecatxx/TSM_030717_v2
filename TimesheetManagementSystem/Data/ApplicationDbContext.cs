@@ -40,9 +40,11 @@ namespace TimeSheetManagementSystem.Data
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-    optionsBuilder.UseSqlServer(@"Server=AISYAH\SQLEXPRESS;database=TSM_290617;Trusted_Connection=True;MultipleActiveResultSets=True");
-    // optionsBuilder.UseSqlServer(@"Server=IT-NB147067\SQLEXPRESS;database=TimeSheetManagementSystemDB_V5;Trusted_Connection=True;MultipleActiveResultSets=True");
-             }
+            optionsBuilder.UseSqlServer(@"Server=AISYAH\SQLEXPRESS;database=TSM_290617;Trusted_Connection=True;MultipleActiveResultSets=True");
+            //optionsBuilder.UseSqlServer(@"Data Source=sql5036.smarterasp.net;Initial Catalog=DB_A26879_oschoolwebhost;User ID=DB_A26879_oschoolwebhost_admin;Password=oschoolfyp2017");
+
+            // optionsBuilder.UseSqlServer(@"Server=IT-NB147067\SQLEXPRESS;database=TimeSheetManagementSystemDB_V5;Trusted_Connection=True;MultipleActiveResultSets=True");
+        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
