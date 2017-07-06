@@ -49,10 +49,13 @@
                         </div>
                         <div class="m-signature-pad--footer">
                             <div class="form-group">
-                                <div class="col-lg-6">
-                                   
-                                    <div class="left">
+                                <div class="col-lg-12">
+
+                                    <div class="pull-left">
                                         <button type="button" class="btn btn-default" data-action="clear">Clear</button>
+                                        <div class="pull-right">
+                                            <input type="button" class="btn btn-primary" value="Save" @@click.prevent="submitForm" id="saveButton" />
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -60,15 +63,15 @@
                     </div>
 
                 </div>
-                <div class="form-group col-md-12">
-                    <label class="control-label col-md-1"></label>
-                    <div class="col-md-10">
-                        <div class="pull-right">
-                            <input type="button" class="btn btn-primary" value="Save" @@click.prevent="submitForm" id="saveButton" />
-                            @*<a id="goToManageTimeInTimeOutDataLink" class="btn btn-default" asp-action="ManageTimeInTimeOutData" asp-controler="TimeInTimeOutData">Cancel</a>*@
+                @*<div class="form-group col-md-12">
+                        <label class="control-label col-md-1"></label>
+                        <div class="col-md-10">
+                            <div class="pull-right">
+                                <input type="button" class="btn btn-primary" value="Save" @@click.prevent="submitForm" id="saveButton" />
+                                <a id="goToManageTimeInTimeOutDataLink" class="btn btn-default" asp-action="ManageTimeInTimeOutData" asp-controler="TimeInTimeOutData">Cancel</a>
+                            </div>
                         </div>
-                    </div>
-                </div>
+                    </div>*@
 
 
                 @*<label class="control-label col-lg-3" for="accountNameInput">Account Name</label>
@@ -79,7 +82,7 @@
                                 <div class="m-signature-pad--body">
                                     <canvas id="canvas" style="border:solid"></canvas>
                                     width:200px;height:150px;
-                                </div>  
+                                </div>
 
                                 <div class="m-signature-pad--footer">
 
@@ -99,7 +102,11 @@
 
                 <div>
                     <canvas id="canvas_blank" style="position:absolute;width:150px;height:150px;display:none;"></canvas>
-                    <img :src="imageUrl" style="width:250px;height:150px;border:2px solid #546e7a" />
+
+                    @*<img :src="imageUrl" style="width:250px;height:150px;border:2px solid #546e7a" />*@
+
+                    <img id="loadImg" src="" style="border:2px solid #546e7a" />
+
                 </div>
                 @*<div class="form-group col-md-12">
                         <label class="control-label col-md-1"></label>
@@ -121,7 +128,7 @@
 
 
     <script>
-       
+
         //Reference: http://fezvrasta.github.io/bootstrap-material-design/#getting-started
         //window.sessionSynopsisNamesArray = [];
 
@@ -138,7 +145,10 @@
         var wrapper = document.getElementById("signature_pad"),
             canvas = wrapper.querySelector("canvas"),
             signaturePad;
-        //var blankCanvas 
+        //var blankCanvas
+
+        var imgSignatureArr = [];
+
 
         var vm = new Vue({
             //console.log(this.$route.params);
@@ -157,6 +167,7 @@
                     actualTimeInHHMM: '',
                     actualTimeOutHHMM: '',
                 },
+                signatureImg: '',
                 moment: moment,
 
                 message: '',
@@ -173,16 +184,20 @@
 
             mounted() {
                 this.loadOneTimeSheetDetailData();
+
+
+
                 this.prepareSignaturePad();
                 //this.validateSignatureCanvas();
-                
+                this.checkForSignature();
 
             },
             computed: {
                 imageUrl: function () {
-                    var url = '/API/TimeInTimeOutData/GetSignatureImageByTimeSheetDetailId/' + window.timeSheetDetailId;;
-
+                    var url = '/API/TimeInTimeOutData/GetSignatureImageByTimeSheetDetailId/' + window.timeSheetDetailId;
+                    console.log(url);
                     return url;
+
                     //let id = this.timeSheetDetailData.timeSheetDetailId;
                     //let url = '/API/TimeInTimeOutData/GetSignatureImageByTimeSheetDetailId/';
                     //return (url + id);
@@ -192,6 +207,66 @@
 
             },
             methods: {
+
+                checkForSignature: function () {
+
+                    $checkExistingSignature = jQuery.ajax({
+                        type: 'GET',
+                        beforeSend: function (xhr) {
+                            xhr.setRequestHeader('RequestVerificationToken', $('input[name=__RequestVerificationToken]').val());
+                        },
+                        url: '/API/TimeInTimeOutData/GetSignatureImageByTimeSheetDetailId/' + window.timeSheetDetailId,
+                        dataType: 'json',
+                        contentType: 'application/json',
+                        //success: function (data) {
+                        //    //debugger
+                        //    $('#loadImg').attr('src', data);
+                        //}
+
+                    });
+
+                    $checkExistingSignature.done(function (data) {
+                        console.dir(data)
+
+                        signatureImg = data.imageByte;
+                        console.dir("aaaaaaaaaaaaaa")
+                        console.dir(signatureImg);
+
+                        var inBase64 = signatureImg;
+                        //$("loadImg")
+                        $('#loadImg').attr('src', "data:image/jpeg;base64," + inBase64);
+
+                        if (signatureImg == null) {
+                            console.dir("nothing here");
+
+
+                        }
+                        else {
+
+                            console.dir("yas ho")
+                        };
+
+
+                        // console.log("aaaa");
+                        //console.dir("aa this one " + data);
+
+
+                        //that.$root._data.signatureImg = data;
+
+
+
+                        //console.log("bbbcc");
+                        //that.$root._data.sessionSynopsisNames = data.sessionSynopsisNames;
+
+                        //console.dir(data.sessionSynopsisNames)
+                        //sessionSynopsis
+                        //console.dir(sessionSynopsisNames);
+
+                    });
+
+                },
+
+
 
 
                 getWeekDayName: function (inWeedDayNumber) {
@@ -325,9 +400,9 @@
 
 
                     var canvasDataUrl = myCanvas.toDataURL();
-                        //signaturePad.toDataURL(myCanvas);
-                        
-                        //signaturePad.toDataURL(myCanvas);
+                    //signaturePad.toDataURL(myCanvas);
+
+                    //signaturePad.toDataURL(myCanvas);
 
                     console.log(canvasDataUrl);
 
@@ -359,7 +434,7 @@
 
                     console.log()
 
-                    
+
 
                     // console.log(oneTimeSheetDetailData.dateOfLesson);
 
@@ -397,13 +472,29 @@
                         dataType: 'json'
                     }).done(function (data) {
 
+                        new Noty({
+                            text: data.message, type: 'success', layout: 'center',
+                            callbacks: {
+                                onClose: function () {
+                                    refreshPage();
+                                    //thi();
+                                },
+                            },
+                        }).show();
+
+
                         console.dir(data);
                         console.log("success");
                         //parent.context = 'success';
                         //parent.message = 'Signature is saved.';
                         //parent.snackbar = true;
                     }).fail(function (data) {
-                        console.log('error occurred');//Spent a long time debugging this. Due to using this object.
+                        new Noty({
+                            text: data.message, type: 'error', layout: 'center',
+                        });
+                                //console.log('error occurred');
+
+                            //Spent a long time debugging this. Due to using this object.
                         //parent.context = 'error';
                         //parent.message = 'Something went wrong. Cannot save signature.';
                         //parent.snackbar = true;
@@ -414,13 +505,15 @@
 
 
 
-                
+
 
 
             },
         });
 
-
+        function refreshPage() {
+            location.reload();
+        }
         function redirect() {
             window.location.replace('/TimeInTimeOutData/ManageTimeInTimeOutData');
         }

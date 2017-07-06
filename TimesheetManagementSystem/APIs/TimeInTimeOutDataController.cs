@@ -500,37 +500,54 @@ namespace TimeSheetManagementSystem.APIs
         //[ValidateAntiForgeryToken]
         public IActionResult GetSignatureImageByTimeSheetDetailId(int id)
         {
-
-            try
-            {
-                var oneTimeSheetDetail = Database.TimeSheetDetails
+            object response;
+            var oneTimeSheetDetail = Database.TimeSheetDetails
                 .Include(input => input.TimeSheetDetailSignature)
                             .Where(input => input.TimeSheetDetailId == id)
                           .AsNoTracking().Single();
-                if (oneTimeSheetDetail.TimeSheetDetailSignature != null)
-                {
-                    return File(oneTimeSheetDetail.TimeSheetDetailSignature.Signature, "image/jpeg");
-                }
-                else
-                {
-                    //Issue: https://stackoverflow.com/questions/35322136/ihostingenvironment-webrootpath-is-null-when-using-ef7-commands
-                    //The _env.WebRootPath gave me null value.
-                    if (_env.WebRootPath == null)
-                    {
-                        _env.WebRootPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
-                    }
-                    var webRoot = _env.WebRootPath;
-                    var file = System.IO.Path.Combine(webRoot, "images/empty.png");
-                    byte[] imageByteData = System.IO.File.ReadAllBytes(file);
 
-                    return File(imageByteData, "image/png");
-                }
+            if (_env.WebRootPath == null)
+            {
+                _env.WebRootPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
+            }
+            var webRoot = _env.WebRootPath;
+            var file = System.IO.Path.Combine(webRoot, "images/empty.png");
+            byte[] imageByteData = System.IO.File.ReadAllBytes(file);
+            
+            try
+            {
+                response = new
+                {
+                    imageByte = oneTimeSheetDetail.TimeSheetDetailSignature == null ? imageByteData : oneTimeSheetDetail.TimeSheetDetailSignature.Signature
+
+                };
+
+                //if (oneTimeSheetDetail.TimeSheetDetailSignature != null)
+                //{
+                //    return File(oneTimeSheetDetail.TimeSheetDetailSignature.Signature, "image/jpeg");
+                //}
+                //else
+                //{
+                //    //Issue: https://stackoverflow.com/questions/35322136/ihostingenvironment-webrootpath-is-null-when-using-ef7-commands
+                //    //The _env.WebRootPath gave me null value.
+                //    //if (_env.WebRootPath == null)
+                //    //{
+                //    //    _env.WebRootPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
+                //    //}
+                //    //var webRoot = _env.WebRootPath;
+                //    //var file = System.IO.Path.Combine(webRoot, "images/empty.png");
+                //    //byte[] imageByteData = System.IO.File.ReadAllBytes(file);
+
+
+
+                //    return File(imageByteData, "image/png");
+                //}
             }
             catch (Exception ex)
             {
                 return BadRequest(new { message = ex.Message });
             }
-
+            return new JsonResult(response);
         }
 
         [HttpPut("UpdateTimeInTimeOutData")]
@@ -550,7 +567,7 @@ namespace TimeSheetManagementSystem.APIs
             //The incoming end time information is in HH:MM format from the client-side. Need to do conversion
             //to total minutes from midnight
             oneTimeSheetDetail.TimeOutInMinutes = ConvertHHMMToMinutes(inFormData["actualTimeOut"]);
-            oneTimeSheetDetail.SessionSynopsisNames = inFormData["sessionSynopsisNames"];
+            //oneTimeSheetDetail.SessionSynopsisNames = inFormData["sessionSynopsisNames"];
 
             try
             {
