@@ -599,18 +599,22 @@ namespace TimeSheetManagementSystem.APIs
             oneTimeSheetDetail.UpdatedByName = userLoginId;
             oneTimeSheetDetail.SignedStatus = true;
 
-            var oneTimeSheetDetailSignature = Database.TimeSheetDetailSignatures
-                .Where(input => input.TimeSheetIDetailId == timeSheetDetailId).Single();
+            oneTimeSheetDetail.TimeSheetDetailSignature = new TimeSheetDetailSignature();
+            oneTimeSheetDetail.TimeSheetDetailSignature.TimeSheetIDetailId = oneTimeSheetDetail.TimeSheetId;
+            oneTimeSheetDetail.TimeSheetDetailSignature.Signature = Convert.FromBase64String(inFormData["signatureImage"]);
 
-            oneTimeSheetDetailSignature.TimeSheetIDetailId = oneTimeSheetDetail.TimeSheetDetailId;
-            oneTimeSheetDetailSignature.Signature = Convert.FromBase64String(inFormData["signatureImage"]);
-            Database.TimeSheetDetailSignatures.Add(oneTimeSheetDetailSignature);
+            //var oneTimeSheetDetailSignature = Database.TimeSheetDetailSignatures.Single();
+            //    //.Where(input => input.TimeSheetIDetailId == timeSheetDetailId).Single();
+
+            //oneTimeSheetDetailSignature.TimeSheetIDetailId = oneTimeSheetDetail.TimeSheetDetailId;
+            //oneTimeSheetDetailSignature.Signature = Convert.FromBase64String(inFormData["signatureImage"]);
+            //Database.TimeSheetDetailSignatures.Add(oneTimeSheetDetailSignature);
 
             try
             {
                 Database.TimeSheetDetails.Update(oneTimeSheetDetail);
 
-                Database.TimeSheetDetailSignatures.Add(oneTimeSheetDetailSignature);
+                //Database.TimeSheetDetailSignatures.Add(oneTimeSheetDetailSignature);
                 
                 Database.SaveChanges();
 

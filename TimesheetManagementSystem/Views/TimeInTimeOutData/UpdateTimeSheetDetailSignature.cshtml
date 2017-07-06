@@ -79,7 +79,7 @@
                                 <div class="m-signature-pad--body">
                                     <canvas id="canvas" style="border:solid"></canvas>
                                     width:200px;height:150px;
-                                </div>
+                                </div>  
 
                                 <div class="m-signature-pad--footer">
 
@@ -121,11 +121,12 @@
 
 
     <script>
-        window.timeSheetDetailId = getIdFromAddressBar();
+       
         //Reference: http://fezvrasta.github.io/bootstrap-material-design/#getting-started
         //window.sessionSynopsisNamesArray = [];
 
-
+        window.timeSheetDetailId = getIdFromAddressBar();
+        console.dir(window.timeSheetDetailId);
         $.material.init(); //Surprisingly, I need to place this command here so that it can work.
 
         function getIdFromAddressBar() {
@@ -137,7 +138,7 @@
         var wrapper = document.getElementById("signature_pad"),
             canvas = wrapper.querySelector("canvas"),
             signaturePad;
-        var blankCanvas 
+        //var blankCanvas 
 
         var vm = new Vue({
             //console.log(this.$route.params);
@@ -171,9 +172,10 @@
             //props: ['comments', 'customerAccountName', 'dateOfLesson', 'actualTimeInHHMM', 'actualTimeOutHHMM', 'officialTimeInHHMM', 'officialTimeOutHHMM', 'actualTimeIn', 'actualTimeOut', 'status', /*'timeSheetDetailId'*/],
 
             mounted() {
+                this.loadOneTimeSheetDetailData();
                 this.prepareSignaturePad();
                 //this.validateSignatureCanvas();
-                this.loadOneTimeSheetDetailData();
+                
 
             },
             computed: {
@@ -274,10 +276,15 @@
                         canvas = wrapper.querySelector("canvas"),
                         signaturePad;
 
+
                     /*Double checking if I can reference these elements using the above statement*/
                     console.dir(canvas);
                     console.dir(wrapper);
+                    //console.dir(blank_canvas);
 
+                    //console.dir("checking for value");
+
+                    //console.log(canvas);
 
                     //window.onresize = resizeCanvas;
 
@@ -311,15 +318,30 @@
 
                     //signaturePad = new SignaturePad(canvas);
 
-                    var myCanvas = $(document).find("#canvas");
-                    var canvasDataUrl = myCanvas.get().toDataURL()
+                    console.dir("aaa");
+
+                    var myCanvas = document.getElementById("canvas");
+                    var blankCanvas = document.getElementById("canvas_blank");
+
+
+                    var canvasDataUrl = myCanvas.toDataURL();
+                        //signaturePad.toDataURL(myCanvas);
+                        
                         //signaturePad.toDataURL(myCanvas);
 
-                    //var blankCanvas = $(document).find("#canvas_blank");
-                    //var blankCanvasDataUrl = signaturePad.toDataURL(blankCanvas)
-                    //myCanvas.get(0).toDataURL()
-
                     console.log(canvasDataUrl);
+
+                    console.dir("bbb");
+
+                    var blankCanvasDataUrl = blankCanvas.toDataURL();
+
+                    //var blankCanvas = document.getElementById("canvas_blank")
+                    ////$(document).find("#canvas_blank");
+                    //var blankCanvasDataUrl = signaturePad.toDataURL(blankCanvas);
+                    //    //signaturePad.toDataURL(blankCanvas)
+                    ////
+
+                    console.log(blankCanvasDataUrl);
 
 
                     if (canvasDataUrl == blankCanvasDataUrl)
@@ -352,9 +374,12 @@
                     var parent = this;
                     var parentComponentContainer = this.$el;
 
-                    var canvasElement = document.find('#canvas');
+                    var canvasElement = document.getElementById('canvas');
                     var image = canvasElement.toDataURL("image/png");
                     image = image.replace('data:image/png;base64,', '');
+
+                    console.dir(window.timeSheetDetailId);
+
                     //Using the following code to check if I can read the CSRF value.
                     //console.log('csrf value: ' + $('input[name=__RequestVerificationToken]').val());
                     $.ajax({
