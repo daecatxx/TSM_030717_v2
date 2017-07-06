@@ -28,9 +28,9 @@ namespace TimeSheetManagementSystem.APIs
     [Route("api/[controller]")]
     public class TimeInTimeOutDataController : Controller
     {
-				private IHostingEnvironment _env;
-				//7 important variables which require declaration
-				private readonly UserManager<ApplicationUser> _userManager;
+        private IHostingEnvironment _env;
+        //7 important variables which require declaration
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IEmailSender _emailSender;
         private readonly ISmsSender _smsSender;
@@ -53,16 +53,16 @@ namespace TimeSheetManagementSystem.APIs
             _emailSender = emailSender;
             _smsSender = smsSender;
             _logger = loggerFactory.CreateLogger<AccountController>();
-						_env = env;
+            _env = env;
         }
         // GET: api/GetOneTimeSheetDetailData/
         [HttpGet("GetOneTimeSheetDetailData/{id}")]
         public IActionResult GetOneTimeSheetDetailData(int id)
         {
-                var oneTimeSheetDetail = Database.TimeSheetDetails
-                         .Where(input => input.TimeSheetDetailId ==
-                                   id)
-                         .AsNoTracking().Single();
+            var oneTimeSheetDetail = Database.TimeSheetDetails
+                     .Where(input => input.TimeSheetDetailId ==
+                               id)
+                     .AsNoTracking().Single();
 
             var formatedTimeSheetDetail = new
             {
@@ -83,7 +83,7 @@ namespace TimeSheetManagementSystem.APIs
                 sessionSynopsisNames = oneTimeSheetDetail.SessionSynopsisNames,
                 status = (oneTimeSheetDetail.TimeInInMinutes != null) ? "done" : ""
             };
- 
+
             return new JsonResult(formatedTimeSheetDetail);
 
         }//End of GetOneTimeSheetDetailData
@@ -203,10 +203,10 @@ namespace TimeSheetManagementSystem.APIs
         [HttpGet("GetCurrentMonthTimeSheetDataAndConfiguration")]
         public IActionResult GetCurrentMonthTimeSheetDataAndConfiguration(TimeSheetDetailQueryModelByInstructor query)
         {
-						/* Objective: The Web API returns one parent TimeSheet and related TimeSheetDetail for the current system month */
-						/* The information also embeds the SessionSynopsis data for listbox binding */
-						Thread.Sleep(2000);
-						List<object> timeSheetDetailList = new List<object>();
+            /* Objective: The Web API returns one parent TimeSheet and related TimeSheetDetail for the current system month */
+            /* The information also embeds the SessionSynopsis data for listbox binding */
+            Thread.Sleep(2000);
+            List<object> timeSheetDetailList = new List<object>();
             object oneTimeSheetData = null;
             object response;
             TimeSheet oneTimeSheetQueryResult = new TimeSheet();
@@ -226,7 +226,7 @@ namespace TimeSheetManagementSystem.APIs
                          .Include(input => input.Instructor)
                          .Where(input => (input.InstructorId == userInfoId) &&
                          (input.MonthAndYear.Month == DateTime.Now.Month) &&
-                         (input.MonthAndYear.Year ==DateTime.Now.Year)).AsNoTracking().FirstOrDefault();
+                         (input.MonthAndYear.Year == DateTime.Now.Year)).AsNoTracking().FirstOrDefault();
             }
 
             if (oneTimeSheetQueryResult == null)
@@ -275,19 +275,19 @@ namespace TimeSheetManagementSystem.APIs
                                                 ratePerHour = e.RatePerHour,
                                                 customerAccountName = e.AccountName,
                                                 sessionSynopsisNames = e.SessionSynopsisNames,
-																								/*If the record is filled with time-in and time-out and a signature has been obtained, this record is not editable*/
-                                                locked = ((e.TimeInInMinutes != null) && (e.SignedStatus==true)) ? true :false,
-																								updateable = (e.SignedStatus == false) ? true : false,
-																								signedStatus = e.SignedStatus,
-																								actualTimeInHHMM = (e.TimeInInMinutes != null) ? ConvertFromMinutesToHHMM(e.TimeInInMinutes) : "",
+                                                /*If the record is filled with time-in and time-out and a signature has been obtained, this record is not editable*/
+                                                locked = ((e.TimeInInMinutes != null) && (e.SignedStatus == true)) ? true : false,
+                                                updateable = (e.SignedStatus == false) ? true : false,
+                                                signedStatus = e.SignedStatus,
+                                                actualTimeInHHMM = (e.TimeInInMinutes != null) ? ConvertFromMinutesToHHMM(e.TimeInInMinutes) : "",
                                                 actualTimeOutHHMM = (e.TimeOutInMinutes != null) ? ConvertFromMinutesToHHMM(e.TimeOutInMinutes) : "",
-																								comments = e.Comments,
-																								isReplacement = e.IsReplacementInstructor,
-																								updatedAt = e.UpdatedAt
+                                                comments = e.Comments,
+                                                isReplacement = e.IsReplacementInstructor,
+                                                updatedAt = e.UpdatedAt
                                             }
                    into temp
-                       orderby temp.dateOfLesson ascending
-                       select temp;
+                                            orderby temp.dateOfLesson ascending
+                                            select temp;
 
 
 
@@ -309,52 +309,55 @@ namespace TimeSheetManagementSystem.APIs
                 });
             }//end of foreach loop which builds the timeSheetDetailList List container .
 
-						//Obtain SessionSynopsis data
-						var sessionSynopsisList = Database.SessionSynopses
-							.Where(input => input.IsVisible == true)
-							.Select(input => new 
-							{
-									sessionSynopsisId = input.SessionSynopsisId,
-									sessionSynopsisName = input.SessionSynopsisName
-							}).ToList();
+            //Obtain SessionSynopsis data
+            var sessionSynopsisList = Database.SessionSynopses
+                .Where(input => input.IsVisible == true)
+                .Select(input => new
+                {
+                    sessionSynopsisId = input.SessionSynopsisId,
+                    sessionSynopsisName = input.SessionSynopsisName
+                }).ToList();
 
             response = new
             {
                 timeSheet = oneTimeSheetData,
                 timeSheetDetailList = sortedTimeSheetDetailList,
-								sessionSynopsisList = sessionSynopsisList
+                sessionSynopsisList = sessionSynopsisList
             };
 
             return new JsonResult(response);
 
-				}//End of GetCurrentMonthTimeSheetDataAndConfiguration
+        }//End of GetCurrentMonthTimeSheetDataAndConfiguration
 
 
-				//POST api/CreateTimeSheetData
-				[HttpPost("CreateTimeSheetData")]
+        //POST api/CreateTimeSheetData
+        [HttpPost("CreateTimeSheetData")]
         [ValidateAntiForgeryToken]
         public IActionResult CreateTimeSheetData(IFormCollection inFormData)
         {
-						DateTime timeSheetMonthAndYear = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
-						//There are two kinds of mode string value : "actual" "mock"
-						string executionMode = inFormData["mode"];
-					 if (executionMode=="mock"){
-					      int mockupMonthValue = Int32.Parse(inFormData["month"]);
-								int mockupYearValue = Int32.Parse(inFormData["year"]);
-								timeSheetMonthAndYear = new DateTime(mockupYearValue, mockupMonthValue, 1);
-						}
+            DateTime timeSheetMonthAndYear = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+            //There are two kinds of mode string value : "actual" "mock"
+            string executionMode = inFormData["mode"];
+            if (executionMode == "mock")
+            {
+                int mockupMonthValue = Int32.Parse(inFormData["month"]);
+                int mockupYearValue = Int32.Parse(inFormData["year"]);
+                timeSheetMonthAndYear = new DateTime(mockupYearValue, mockupMonthValue, 1);
+            }
             string customMessage = "";
             //Obtain the user id of the user who has logon
 
             string userLoginId = _userManager.GetUserName(User);
             int userInfoId = Database.UserInfo.Single(input => input.LoginUserName == userLoginId).UserInfoId;
 
-						//Check if timesheet data already exist for the particular current month
-						var timeSheetQueryResults = Database.TimeSheets.Where(ts => (ts.MonthAndYear == timeSheetMonthAndYear) && (ts.InstructorId == userInfoId)).ToList();
+            //Check if timesheet data already exist for the particular current month
+            var timeSheetQueryResults = Database.TimeSheets.Where(ts => (ts.MonthAndYear == timeSheetMonthAndYear) && (ts.InstructorId == userInfoId)).ToList();
 
             if ((timeSheetQueryResults.Count) != 0)
             {
-                object httpFailRequestResultMessage = new { message = String.Format("There is an existing time sheet data for month {0} year {1}",
+                object httpFailRequestResultMessage = new
+                {
+                    message = String.Format("There is an existing time sheet data for month {0} year {1}",
                timeSheetMonthAndYear.ToString("MMM", CultureInfo.InvariantCulture),
                timeSheetMonthAndYear.Year)
                 };
@@ -368,22 +371,22 @@ namespace TimeSheetManagementSystem.APIs
 
             oneNewTimeSheet.CreatedById = userInfoId;
             oneNewTimeSheet.InstructorId = userInfoId;
-						oneNewTimeSheet.UpdatedById = userInfoId;
-						oneNewTimeSheet.CreatedAt = DateTime.Now;
+            oneNewTimeSheet.UpdatedById = userInfoId;
+            oneNewTimeSheet.CreatedAt = DateTime.Now;
             oneNewTimeSheet.UpdatedAt = DateTime.Now;
             //If the instructor creates the timesheet parent record on 10 June 2018, the MonthAndYear property should
             //hold 2018/06/1 DateTime value
             oneNewTimeSheet.MonthAndYear = timeSheetMonthAndYear;
 
             List<Int64> accountDetailIdList = new List<Int64>();
-						//The client-side is passing in an array of id values.
-						//The following is the technique I have used to collect the id values
-						//and create a collection.
-            foreach(string value in inFormData["accountDetailIds[]"])
+            //The client-side is passing in an array of id values.
+            //The following is the technique I have used to collect the id values
+            //and create a collection.
+            foreach (string value in inFormData["accountDetailIds[]"])
             {
                 accountDetailIdList.Add(Int64.Parse(value));
             }
-          
+
 
 
             List<InstructorAccount> instructorAccountList
@@ -393,57 +396,57 @@ namespace TimeSheetManagementSystem.APIs
 
             foreach (InstructorAccount oneInstructorAccountData in instructorAccountList)
             {
-								var accountRateList = oneInstructorAccountData.CustomerAccount.
-										AccountRates.Where(ar => ar.EffectiveStartDate <= timeSheetMonthAndYear).ToList();
-                    
-								if (accountRateList.Count != 0)
-								{
-										//https://stackoverflow.com/questions/6775050/how-do-i-get-the-latest-date-from-a-collection-of-objects-using-linq
-										//I had problems retrieving AccountRate information when there is one.
-										//Also, this is probably due to, my client-side code is not restricting the user from selecting
-										//AccountDetail which has AccountRate effectiveStartDate which is still "later" than the current date time.
-										DateTime? latestDate = accountRateList.Max(r => r.EffectiveStartDate);
-										decimal ratePerHour = accountRateList.Where(r => r.EffectiveStartDate == latestDate).Single().RatePerHour;
-																	
-										List<AccountDetail> accountDetailList =
-										oneInstructorAccountData.CustomerAccount.AccountDetails
-										.Where(ad => ad.EffectiveStartDate <= timeSheetMonthAndYear)
-										.OrderByDescending(ar => ar.EffectiveStartDate).ToList();
-										//https://stackoverflow.com/questions/1700725/int-weekdayname
-										foreach (AccountDetail oneAccountDetail in accountDetailList)
-										{
-												if (accountDetailIdList.Contains(oneAccountDetail.AccountDetailId))
-												{
-														DayOfWeek dayOfWeek = (DayOfWeek)Enum.ToObject(typeof(DayOfWeek), (oneAccountDetail.DayOfWeekNumber - 1));
-														List<DateTime> dateList = GetDates(timeSheetMonthAndYear.Year, timeSheetMonthAndYear.Month, dayOfWeek);
-														foreach (DateTime oneDate in dateList)
-														{
-																oneNewTimeSheet.TimeSheetDetails.Add(new TimeSheetDetail
-																{
-																		TimeSheetId = oneNewTimeSheet.TimeSheetId,
-																		CreatedAt = oneNewTimeSheet.CreatedAt,
-																		UpdatedAt = oneNewTimeSheet.UpdatedAt,
-																		DateOfLesson = oneDate,
-																		AccountName =
-																			oneInstructorAccountData.CustomerAccount.AccountName,
-																		OfficialTimeInMinutes = oneAccountDetail.StartTimeInMinutes,
-																		OfficialTimeOutMinutes = oneAccountDetail.EndTimeInMinutes,
-																		TimeInInMinutes = null,
-																		TimeOutInMinutes = null,
-																		RatePerHour = ratePerHour,
-																		WageRatePerHour = oneInstructorAccountData.WageRate,
-																		IsReplacementInstructor = false,
-																		SessionSynopsisNames = "",
-																		Comments = "",
-																		CreatedByName = "system",
-																		UpdatedByName = "",
-																		SignedStatus = false
-																});
-														}
-												}
+                var accountRateList = oneInstructorAccountData.CustomerAccount.
+                        AccountRates.Where(ar => ar.EffectiveStartDate <= timeSheetMonthAndYear).ToList();
 
-										}//foreach
-								}
+                if (accountRateList.Count != 0)
+                {
+                    //https://stackoverflow.com/questions/6775050/how-do-i-get-the-latest-date-from-a-collection-of-objects-using-linq
+                    //I had problems retrieving AccountRate information when there is one.
+                    //Also, this is probably due to, my client-side code is not restricting the user from selecting
+                    //AccountDetail which has AccountRate effectiveStartDate which is still "later" than the current date time.
+                    DateTime? latestDate = accountRateList.Max(r => r.EffectiveStartDate);
+                    decimal ratePerHour = accountRateList.Where(r => r.EffectiveStartDate == latestDate).Single().RatePerHour;
+
+                    List<AccountDetail> accountDetailList =
+                    oneInstructorAccountData.CustomerAccount.AccountDetails
+                    .Where(ad => ad.EffectiveStartDate <= timeSheetMonthAndYear)
+                    .OrderByDescending(ar => ar.EffectiveStartDate).ToList();
+                    //https://stackoverflow.com/questions/1700725/int-weekdayname
+                    foreach (AccountDetail oneAccountDetail in accountDetailList)
+                    {
+                        if (accountDetailIdList.Contains(oneAccountDetail.AccountDetailId))
+                        {
+                            DayOfWeek dayOfWeek = (DayOfWeek)Enum.ToObject(typeof(DayOfWeek), (oneAccountDetail.DayOfWeekNumber - 1));
+                            List<DateTime> dateList = GetDates(timeSheetMonthAndYear.Year, timeSheetMonthAndYear.Month, dayOfWeek);
+                            foreach (DateTime oneDate in dateList)
+                            {
+                                oneNewTimeSheet.TimeSheetDetails.Add(new TimeSheetDetail
+                                {
+                                    TimeSheetId = oneNewTimeSheet.TimeSheetId,
+                                    CreatedAt = oneNewTimeSheet.CreatedAt,
+                                    UpdatedAt = oneNewTimeSheet.UpdatedAt,
+                                    DateOfLesson = oneDate,
+                                    AccountName =
+                                            oneInstructorAccountData.CustomerAccount.AccountName,
+                                    OfficialTimeInMinutes = oneAccountDetail.StartTimeInMinutes,
+                                    OfficialTimeOutMinutes = oneAccountDetail.EndTimeInMinutes,
+                                    TimeInInMinutes = null,
+                                    TimeOutInMinutes = null,
+                                    RatePerHour = ratePerHour,
+                                    WageRatePerHour = oneInstructorAccountData.WageRate,
+                                    IsReplacementInstructor = false,
+                                    SessionSynopsisNames = "",
+                                    Comments = "",
+                                    CreatedByName = "system",
+                                    UpdatedByName = "",
+                                    SignedStatus = false
+                                });
+                            }
+                        }
+
+                    }//foreach
+                }
             }
 
             try
@@ -463,9 +466,9 @@ namespace TimeSheetManagementSystem.APIs
             var successRequestResultMessage = new
             {
                 message = String.Format("Created new time sheet data for month {0} year {1}",
-                oneNewTimeSheet.MonthAndYear.ToString("MMM", CultureInfo.InvariantCulture), 
+                oneNewTimeSheet.MonthAndYear.ToString("MMM", CultureInfo.InvariantCulture),
                 oneNewTimeSheet.MonthAndYear.Year)
-        };
+            };
 
             //Create a OkObjectResult class instance, httpOkResult.
             //When creating the object, provide the previous message object into it.
@@ -492,43 +495,62 @@ namespace TimeSheetManagementSystem.APIs
             return totalMinutesAfterMidnight;
         }//ConvertHHMMToMinutes() method
 
-				[HttpGet("GetSignatureImageByTimeSheetDetailId/{id}")]
-				//GET api/GetSignatureImage/4
-				//[ValidateAntiForgeryToken]
-				public IActionResult GetSignatureImageByTimeSheetDetailId( int id)
-				{
+        [HttpGet("GetSignatureImageByTimeSheetDetailId/{id}")]
+        //GET api/GetSignatureImage/4
+        //[ValidateAntiForgeryToken]
+        public IActionResult GetSignatureImageByTimeSheetDetailId(int id)
+        {
+            object response;
+            var oneTimeSheetDetail = Database.TimeSheetDetails
+                .Include(input => input.TimeSheetDetailSignature)
+                            .Where(input => input.TimeSheetDetailId == id)
+                          .AsNoTracking().Single();
 
-						try
-						{
-								var oneTimeSheetDetail = Database.TimeSheetDetails
-								.Include(input => input.TimeSheetDetailSignature)
-											.Where(input => input.TimeSheetDetailId == id)
-		  								.AsNoTracking().Single();
-								if (oneTimeSheetDetail.TimeSheetDetailSignature != null)
-								{
-										return File(oneTimeSheetDetail.TimeSheetDetailSignature.Signature, "image/jpeg");
-								}
-								else
-								{
-										//Issue: https://stackoverflow.com/questions/35322136/ihostingenvironment-webrootpath-is-null-when-using-ef7-commands
-										//The _env.WebRootPath gave me null value.
-										if (_env.WebRootPath == null)
-										{
-												_env.WebRootPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
-										}
-										var webRoot = _env.WebRootPath;
-										var file = System.IO.Path.Combine(webRoot, "images/empty.png");
-										byte[] imageByteData = System.IO.File.ReadAllBytes(file);
-										
-										return File(imageByteData, "image/png");
-								}
-						}catch(Exception ex){
-								return BadRequest(new { message = ex.Message });
-						}
+            if (_env.WebRootPath == null)
+            {
+                _env.WebRootPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
+            }
+            var webRoot = _env.WebRootPath;
+            var file = System.IO.Path.Combine(webRoot, "images/empty.png");
+            byte[] imageByteData = System.IO.File.ReadAllBytes(file);
+            
+            try
+            {
+                response = new
+                {
+                    imageByte = oneTimeSheetDetail.TimeSheetDetailSignature == null ? imageByteData : oneTimeSheetDetail.TimeSheetDetailSignature.Signature
 
-				}
+                };
 
-				[HttpPut("UpdateTimeInTimeOutData")]
+                //if (oneTimeSheetDetail.TimeSheetDetailSignature != null)
+                //{
+                //    return File(oneTimeSheetDetail.TimeSheetDetailSignature.Signature, "image/jpeg");
+                //}
+                //else
+                //{
+                //    //Issue: https://stackoverflow.com/questions/35322136/ihostingenvironment-webrootpath-is-null-when-using-ef7-commands
+                //    //The _env.WebRootPath gave me null value.
+                //    //if (_env.WebRootPath == null)
+                //    //{
+                //    //    _env.WebRootPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
+                //    //}
+                //    //var webRoot = _env.WebRootPath;
+                //    //var file = System.IO.Path.Combine(webRoot, "images/empty.png");
+                //    //byte[] imageByteData = System.IO.File.ReadAllBytes(file);
+
+
+
+                //    return File(imageByteData, "image/png");
+                //}
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            return new JsonResult(response);
+        }
+
+        [HttpPut("UpdateTimeInTimeOutData")]
         [ValidateAntiForgeryToken]
         public IActionResult UpdateTimeInTimeOutData(IFormCollection inFormData)
         {
@@ -545,6 +567,8 @@ namespace TimeSheetManagementSystem.APIs
             //The incoming end time information is in HH:MM format from the client-side. Need to do conversion
             //to total minutes from midnight
             oneTimeSheetDetail.TimeOutInMinutes = ConvertHHMMToMinutes(inFormData["actualTimeOut"]);
+            //oneTimeSheetDetail.SessionSynopsisNames = inFormData["sessionSynopsisNames"];
+
             try
             {
                 Database.TimeSheetDetails.Update(oneTimeSheetDetail);
@@ -562,7 +586,7 @@ namespace TimeSheetManagementSystem.APIs
              //Message member variable (property)
             var successRequestResultMessage = new
             {
-                message ="Updated time in time out data."
+                message = "Updated time in time out data."
             };
 
             //Create a OkObjectResult class instance, httpOkResult.
@@ -572,35 +596,49 @@ namespace TimeSheetManagementSystem.APIs
             //Send the OkObjectResult class object back to the client.
             return httpOkResult;
         }//End of UpdateTimeInTimeOutData() method
-				 //POST api/CreateTimeInTimeOutDataSignature
-				[HttpPost("CreateTimeInTimeOutDataSignature")]
+         //POST api/CreateTimeInTimeOutDataSignature
+        [HttpPost("CreateTimeInTimeOutDataSignature")]
         [ValidateAntiForgeryToken]
         public IActionResult CreateTimeInTimeOutDataSignature(IFormCollection inFormData)
         {
-						//Obtain the TimeSheetDetail id value to search for the correct TimeSheetDetail entity
-						long timeSheetDetailId = Int64.Parse(inFormData["timeSheetDetailId"]);
+            //Obtain the TimeSheetDetail id value to search for the correct TimeSheetDetail entity
+            long timeSheetDetailId = Int64.Parse(inFormData["timeSheetDetailId"]);
 
-						//Obtain the user id of the user who has logon
-						string userLoginId = _userManager.GetUserName(User);
+            //Obtain the user id of the user who has logon
+            string userLoginId = _userManager.GetUserName(User);
             int userInfoId = Database.UserInfo.Single(input => input.LoginUserName == userLoginId).UserInfoId;
-            
-						var oneTimeSheetDetail = Database.TimeSheetDetails
-                  .Where(input => input.TimeSheetDetailId == timeSheetDetailId)
-                  .Single();
 
-						oneTimeSheetDetail.UpdatedAt = DateTime.Now;
-						oneTimeSheetDetail.UpdatedByName = userLoginId;
-						oneTimeSheetDetail.SignedStatus = true;
+            var oneTimeSheetDetail = Database.TimeSheetDetails
+            .Where(input => input.TimeSheetDetailId == timeSheetDetailId)
+            .Single();
 
-						oneTimeSheetDetail.TimeSheetDetailSignature = new TimeSheetDetailSignature();
-						oneTimeSheetDetail.TimeSheetDetailSignature.TimeSheetIDetailId = oneTimeSheetDetail.TimeSheetId;
-						oneTimeSheetDetail.TimeSheetDetailSignature.Signature = Convert.FromBase64String(inFormData["signatureImage"]);
-        
+            oneTimeSheetDetail.UpdatedAt = DateTime.Now;
+            oneTimeSheetDetail.UpdatedByName = userLoginId;
+            oneTimeSheetDetail.SignedStatus = true;
+
+            oneTimeSheetDetail.TimeSheetDetailSignature = new TimeSheetDetailSignature();
+            oneTimeSheetDetail.TimeSheetDetailSignature.TimeSheetIDetailId = oneTimeSheetDetail.TimeSheetId;
+            oneTimeSheetDetail.TimeSheetDetailSignature.Signature = Convert.FromBase64String(inFormData["signatureImage"]);
+
+            //var oneTimeSheetDetailSignature = Database.TimeSheetDetailSignatures.Single();
+            //    //.Where(input => input.TimeSheetIDetailId == timeSheetDetailId).Single();
+
+            //oneTimeSheetDetailSignature.TimeSheetIDetailId = oneTimeSheetDetail.TimeSheetDetailId;
+            //oneTimeSheetDetailSignature.Signature = Convert.FromBase64String(inFormData["signatureImage"]);
+            //Database.TimeSheetDetailSignatures.Add(oneTimeSheetDetailSignature);
+
             try
             {
                 Database.TimeSheetDetails.Update(oneTimeSheetDetail);
-								
+
+                //Database.TimeSheetDetailSignatures.Add(oneTimeSheetDetailSignature);
+                
                 Database.SaveChanges();
+
+                //oneTimeSheetDetailSignature.TimeSheetDetailSignature = new TimeSheetDetailSignature();
+                //oneTimeSheetDetailSignature.TimeSheetDetailSignature.TimeSheetIDetailId = oneTimeSheetDetail.TimeSheetId;
+                //oneTimeSheetDetailSignature.TimeSheetDetailSignature.Signature = Convert.FromBase64String(inFormData["signatureImage"]);
+
             }
             catch (Exception ex)
             {
@@ -614,7 +652,7 @@ namespace TimeSheetManagementSystem.APIs
              //Message member variable (property)
             var successRequestResultMessage = new
             {
-                message ="Updated signature."
+                message = "Updated signature."
             };
 
             //Create a OkObjectResult class instance, httpOkResult.
@@ -623,12 +661,12 @@ namespace TimeSheetManagementSystem.APIs
                         new OkObjectResult(successRequestResultMessage);
             //Send the OkObjectResult class object back to the client.
             return httpOkResult;
-				}//End of CreateTimeInTimeOutDataSignature() method
+        }//End of CreateTimeInTimeOutDataSignature() method
 
 
 
-				//POST api/CheckAvailableTimeSheetData
-				[HttpPost("CheckAvailableTimeSheetData")]
+        //POST api/CheckAvailableTimeSheetData
+        [HttpPost("CheckAvailableTimeSheetData")]
         [ValidateAntiForgeryToken]
         public IActionResult CheckAvailableTimeSheetData(IFormCollection inFormData)
         {
@@ -637,21 +675,21 @@ namespace TimeSheetManagementSystem.APIs
             string userLoginId = _userManager.GetUserName(User);
             int userInfoId = Database.UserInfo.Single(input => input.LoginUserName == userLoginId).UserInfoId;
 
-						DateTime timeSheetMonthAndYear = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
-						//There are two kinds of mode string value : "actual" "mock"
-						string executionMode = inFormData["mode"];
-						if (executionMode == "mock")
-						{
-								int mockupMonthValue = Int32.Parse(inFormData["month"]);
-								int mockupYearValue = Int32.Parse(inFormData["year"]);
-								timeSheetMonthAndYear = new DateTime(mockupYearValue, mockupMonthValue, 1);
-						}
+            DateTime timeSheetMonthAndYear = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+            //There are two kinds of mode string value : "actual" "mock"
+            string executionMode = inFormData["mode"];
+            if (executionMode == "mock")
+            {
+                int mockupMonthValue = Int32.Parse(inFormData["month"]);
+                int mockupYearValue = Int32.Parse(inFormData["year"]);
+                timeSheetMonthAndYear = new DateTime(mockupYearValue, mockupMonthValue, 1);
+            }
 
-						//Check if timesheet data already exist for the particular current month
-						//var timeSheetQueryResults = Database.TimeSheets.Where(ts => (ts.MonthAndYear == timeSheetMonthAndYear) && (ts.InstructorId == userInfoId)).ToList();
-						var timeSheetQueryResults = Database.TimeSheets
-						.Where(ts => (ts.MonthAndYear == timeSheetMonthAndYear) && (ts.InstructorId == userInfoId)).AsNoTracking().ToList();
-						if ((timeSheetQueryResults.Count) != 0)
+            //Check if timesheet data already exist for the particular current month
+            //var timeSheetQueryResults = Database.TimeSheets.Where(ts => (ts.MonthAndYear == timeSheetMonthAndYear) && (ts.InstructorId == userInfoId)).ToList();
+            var timeSheetQueryResults = Database.TimeSheets
+            .Where(ts => (ts.MonthAndYear == timeSheetMonthAndYear) && (ts.InstructorId == userInfoId)).AsNoTracking().ToList();
+            if ((timeSheetQueryResults.Count) != 0)
             {
                 responseData = new
                 {

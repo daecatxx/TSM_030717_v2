@@ -3,6 +3,14 @@
         width: 200px;
         height: 50px;
     }
+    
+    /*.noty_body {
+        width: 80%;
+        
+        text-align: center;
+        margin: 0px auto;
+    }*/
+
 </style>
 
 
@@ -75,6 +83,11 @@
                         <div class="make-switch" id="replacmentInstructorSwitch" data-on="primary" data-off="info">
                             <input type="checkbox" id="replacementInput" name="replacementInput">
                         </div>
+                        <p>
+                            <label class="col-lg">
+                                *On for Replacement and Off for Postpone
+                            </label>
+                        </p>
                     </div>
                 </div>
 
@@ -151,6 +164,8 @@
                 //actualTimeInHHMM: '',
                 //actualTimeOutHHMM: ''
             },
+            //props: ['comments','customerAccountName','dateOfLesson','actualTimeInHHMM','actualTimeOutHHMM','officialTimeInHHMM','officialTimeOutHHMM','actualTimeIn', 'actualTimeOut','status','timeSheetDetailId'],
+
             mounted() {
 
                 this.setupCustomerAccountListBox();
@@ -231,7 +246,7 @@
                     });//end of jQuery.ajax() method call
                     $saveDataHandler.done(function (data, textStatus, jqXHR) {
                         new Noty({
-                            text: data.message, type: 'success', layout: 'center',
+                            text: data.message, type: 'success', layout: 'center', 
                             callbacks: {
                                 onClose: function () {
                                     redirect();

@@ -27,5 +27,11 @@ namespace TimeSheetManagementSystem.Controllers
         {
             return View();
         }
+
+        public IActionResult UpdateTimeSheetDetailSignature()
+        {
+            return View();
+        }
+        
     }
 }
