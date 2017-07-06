@@ -97,7 +97,7 @@ methods:{
       //console.log(this.$el.querySelector('#canvas_blank').toDataURL());
       //Return true if the canvas has digital data. Return false otherwise
       //http://jsfiddle.net/amaan/rX572/
-      if(this.$el.querySelector('#canvas').toDataURL() == this.$el.querySelector('#canvas_blank').toDataURL())
+      if(this.$('#canvas').toDataURL() == this.$('#canvas_blank').toDataURL())
         return false;
       else
         return true;
@@ -113,7 +113,7 @@ methods:{
         var parent = this;
         var parentComponentContainer = this.$el;
          
-        var canvasElement = (parentComponentContainer.querySelector('#canvas'));
+        var canvasElement = $('#canvas');
         var image =canvasElement.toDataURL("image/png");
         image = image.replace('data:image/png;base64,', '');
         //Using the following code to check if I can read the CSRF value.

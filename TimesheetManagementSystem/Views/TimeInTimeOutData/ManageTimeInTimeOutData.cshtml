@@ -37,6 +37,8 @@
                                 </button>
                                 <ul id="context-menu" class="dropdown-menu dropdown-menu-right" style="font-size:14pt;">
                                     <li><a v-bind:href="updateTimeSheetDetail(timeSheetDetail.timeSheetDetailId)">Update Time In/Time Out</a></li>
+                                    <li><a v-bind:href="updateTimeSheetSignature(timeSheetDetail.timeSheetDetailId)">Update Signature</a></li>
+
                                 </ul>
                             </div>
                         </td>
@@ -124,6 +126,9 @@
                 },
                 updateTimeSheetDetail: function (id) {
                     return '/TimeInTimeOutData/UpdateTimeSheetDetail/' + id;
+                },
+                updateTimeSheetSignature: function (id) {
+                    return '/TimeInTimeOutData/UpdateTimeSheetDetailSignature/' + id;
                 },
                 loadTimeSheetDetailData: function () {
                     var that = this;
