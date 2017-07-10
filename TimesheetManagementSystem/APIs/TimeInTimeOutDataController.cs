@@ -513,12 +513,46 @@ namespace TimeSheetManagementSystem.APIs
             var webRoot = _env.WebRootPath;
             var file = System.IO.Path.Combine(webRoot, "images/empty.png");
             byte[] imageByteData = System.IO.File.ReadAllBytes(file);
-            
+
+            //byte[] existingSignature = null;
+            //= { 0 };
+            var noImg = "";
+
+            byte[] signatureImg = { };
+
+            var existingImg = "";
+
+            if (oneTimeSheetDetail.TimeSheetDetailSignature != null)
+            {
+                signatureImg = oneTimeSheetDetail.TimeSheetDetailSignature.Signature;
+                
+                //existingImg = Convert.ToBase64String(signatureImg);
+
+
+                //signatureImg = null;
+                //signatureImg = oneTimeSheetDetail.TimeSheetDetailSignature.Signature;
+            }
+            // else
+            //signatureImg = oneTimeSheetDetail.TimeSheetDetailSignature.Signature;
+
+
+
+            //else {
+            //    return signatureImg;
+            //}
+
+            //if else statement then assign the result to response
+
             try
             {
                 response = new
                 {
-                    imageByte = oneTimeSheetDetail.TimeSheetDetailSignature == null ? imageByteData : oneTimeSheetDetail.TimeSheetDetailSignature.Signature
+                    imgResult = oneTimeSheetDetail.TimeSheetDetailSignature == null ? signatureImg : oneTimeSheetDetail.TimeSheetDetailSignature.Signature
+                    //imgResult = signatureImg
+
+                    //signatureImg
+
+                    //imageByte = oneTimeSheetDetail.TimeSheetDetailSignature == null ? imageByteData : oneTimeSheetDetail.TimeSheetDetailSignature.Signature
 
                 };
 
@@ -618,6 +652,9 @@ namespace TimeSheetManagementSystem.APIs
 
             oneTimeSheetDetail.TimeSheetDetailSignature = new TimeSheetDetailSignature();
             oneTimeSheetDetail.TimeSheetDetailSignature.TimeSheetIDetailId = oneTimeSheetDetail.TimeSheetId;
+
+            var sign = inFormData["signatureImage"];
+
             oneTimeSheetDetail.TimeSheetDetailSignature.Signature = Convert.FromBase64String(inFormData["signatureImage"]);
 
             //var oneTimeSheetDetailSignature = Database.TimeSheetDetailSignatures.Single();
@@ -632,7 +669,7 @@ namespace TimeSheetManagementSystem.APIs
                 Database.TimeSheetDetails.Update(oneTimeSheetDetail);
 
                 //Database.TimeSheetDetailSignatures.Add(oneTimeSheetDetailSignature);
-                
+
                 Database.SaveChanges();
 
                 //oneTimeSheetDetailSignature.TimeSheetDetailSignature = new TimeSheetDetailSignature();

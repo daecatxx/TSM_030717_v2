@@ -8,7 +8,7 @@ using TimeSheetManagementSystem.Data;
 namespace TimeSheetManagementSystem.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20170629053633_setupdb")]
+    [Migration("20170707053746_setupdb")]
     partial class setupdb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

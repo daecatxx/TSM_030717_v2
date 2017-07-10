@@ -175,7 +175,7 @@
                     dataType: 'json',
                     data: { accountDetailIds: that.$root._data.selectedAccountDetailValues },
                     contentType: 'application/x-www-form-urlencoded',
-                })
+                })  
                 $requestTracker.done(function (data, textStatus, jqXHR) {
                     new Noty({
                         text: data.message, type: 'success',

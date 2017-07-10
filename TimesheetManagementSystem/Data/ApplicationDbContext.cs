@@ -24,7 +24,7 @@ namespace TimeSheetManagementSystem.Data
         public DbSet<AccountDetail> AccountDetails { get; set; }
         public DbSet<TimeSheet> TimeSheets { get; set; }
         public DbSet<TimeSheetDetail> TimeSheetDetails { get; set; }
-				public DbSet<TimeSheetDetailSignature> TimeSheetDetailSignatures { get; set; }
+        public DbSet<TimeSheetDetailSignature> TimeSheetDetailSignatures { get; set; }
         public DbSet<AccountRate> AccountRates { get; set; }
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
@@ -414,11 +414,11 @@ namespace TimeSheetManagementSystem.Data
                 .HasDefaultValue(false)
                 .IsRequired(true);
 
-             modelBuilder.Entity<TimeSheetDetail>()
-                .Property(input => input.WageRatePerHour)
-                .HasColumnName("WageRatePerHour")
-                .HasColumnType("decimal(6,2)")
-                .IsRequired(true);
+            modelBuilder.Entity<TimeSheetDetail>()
+               .Property(input => input.WageRatePerHour)
+               .HasColumnName("WageRatePerHour")
+               .HasColumnType("decimal(6,2)")
+               .IsRequired(true);
             modelBuilder.Entity<TimeSheetDetail>()
                .Property(input => input.SignedStatus)
                .HasColumnName("SignedStatus")
@@ -426,28 +426,28 @@ namespace TimeSheetManagementSystem.Data
                .IsRequired(true);
 
             modelBuilder.Entity<TimeSheetDetail>()
-								.Property(input => input.CreatedAt)
-								.HasDefaultValueSql("GetDate()");
-						modelBuilder.Entity<TimeSheetDetail>()
-								.Property(input => input.UpdatedAt)
-								.HasDefaultValueSql("GetDate()");
-						modelBuilder.Entity<TimeSheetDetail>()
-							.Property(input => input.CreatedByName)
-							.HasColumnName("CreatedByName")
-							.HasColumnType("VARCHAR(100)")
-							.IsRequired(true);
-						modelBuilder.Entity<TimeSheetDetail>()
-							.Property(input => input.UpdatedByName)
-							.HasColumnName("UpdatedByName")
-							.HasColumnType("VARCHAR(100)")
-							.IsRequired(true);
-						//----------- Defining TimeSheetDetail Entity - End --------------
+                                .Property(input => input.CreatedAt)
+                                .HasDefaultValueSql("GetDate()");
+            modelBuilder.Entity<TimeSheetDetail>()
+                    .Property(input => input.UpdatedAt)
+                    .HasDefaultValueSql("GetDate()");
+            modelBuilder.Entity<TimeSheetDetail>()
+                .Property(input => input.CreatedByName)
+                .HasColumnName("CreatedByName")
+                .HasColumnType("VARCHAR(100)")
+                .IsRequired(true);
+            modelBuilder.Entity<TimeSheetDetail>()
+                .Property(input => input.UpdatedByName)
+                .HasColumnName("UpdatedByName")
+                .HasColumnType("VARCHAR(100)")
+                .IsRequired(true);
+            //----------- Defining TimeSheetDetail Entity - End --------------
 
-						//----------- Definining TimeSheetDetailSignature - Start --------------
-						//Make the TimeSheetSignatureId as  Primary Key 
-						modelBuilder.Entity<TimeSheetDetailSignature>()
-                .HasKey(input => input.TimeSheetDetailSignatureId)
-                .HasName("PrimaryKey_TimeSheetSignatureId");
+            //----------- Definining TimeSheetDetailSignature - Start --------------
+            //Make the TimeSheetSignatureId as  Primary Key 
+            modelBuilder.Entity<TimeSheetDetailSignature>()
+    .HasKey(input => input.TimeSheetDetailSignatureId)
+    .HasName("PrimaryKey_TimeSheetSignatureId");
 
             //Make the TimeSheetSignatureId an Auto-Number field.
             modelBuilder.Entity<TimeSheetDetailSignature>()
@@ -494,7 +494,7 @@ namespace TimeSheetManagementSystem.Data
               .HasOne(input => input.TimeSheet)
               .WithMany(input => input.TimeSheetDetails)
               .HasForeignKey(input => input.TimeSheetId);
-            
+
             //many-to-one relationship between TimeSheet and UserInfo
             //for the createdby relationship
             //Usually this relationship links to the administrator user inside
@@ -569,7 +569,7 @@ namespace TimeSheetManagementSystem.Data
             .HasOne(input => input.CustomerAccount)
             .WithMany(input => input.AccountRates)
             .HasForeignKey(input => input.CustomerAccountId);
-            
+
             //The following two lines need to be copied into the Setupdb file.
             /*
             migrationBuilder.Sql(File.ReadAllText("migrations/setup_AspNetUsers_Insert_trigger.sql"));
