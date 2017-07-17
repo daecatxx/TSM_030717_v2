@@ -19,7 +19,7 @@ namespace TimeSheetManagementSystem
                 .UseApplicationInsights()
                 .Build();
 
-            host.Run();
+         host.Run();
         }
     }
 }

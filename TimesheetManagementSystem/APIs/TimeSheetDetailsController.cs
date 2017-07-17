@@ -283,21 +283,18 @@ namespace TimeSheetManagementSystem.APIs
                 oneNewTimeSheetDetail.OfficialTimeInMinutes = ConvertHHMMToMinutes(inFormData["officialTimeIn"]);
                 oneNewTimeSheetDetail.OfficialTimeOutMinutes = ConvertHHMMToMinutes(inFormData["officialTimeOut"]);
                 oneNewTimeSheetDetail.WageRatePerHour = 0;
-                //Decimal.Parse(inFormData["wageRate"]);
+              
                 oneNewTimeSheetDetail.RatePerHour = 0;
-                //Decimal.Parse(inFormData["ratePerHour"]);
+          
                 oneNewTimeSheetDetail.DateOfLesson = DateTime.ParseExact(inFormData["dateOfLesson"], "d/M/yyyy", CultureInfo.InvariantCulture);
 
-                //oneNewTimeSheetDetail.TimeInInMinutes = ConvertHHMMToMinutes(inFormData["timeIn"]);
-                //oneNewTimeSheetDetail.TimeOutInMinutes = ConvertHHMMToMinutes(inFormData["timeOut"]);
-                //oneNewTimeSheetDetail.Comments = inFormData["comments"];
+
 
                 oneNewTimeSheetDetail.SessionSynopsisNames = inFormData["sessionSynopsisNames"];
                 oneNewTimeSheetDetail.IsReplacementInstructor = bool.Parse(inFormData["isReplacementInstructor"]);
                 test = ss;
 
-                //oneNewTimeSheetDetail.CreatedAt = DateTime.Now;
-                //oneNewTimeSheetDetail.UpdatedAt = DateTime.Now;
+             
                 oneNewTimeSheetDetail.CreatedByName = userFullName;
                 oneNewTimeSheetDetail.UpdatedByName = userFullName;
                 Database.TimeSheetDetails.Add(oneNewTimeSheetDetail);

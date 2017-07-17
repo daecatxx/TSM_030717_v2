@@ -438,6 +438,7 @@
 								columnsresize: true,
                 width: '95%',
                 source: dataAdapter,
+                editable: true,
                 columnsheight: 50,
                 theme:'energyblue',
                 columns: [
@@ -502,6 +503,7 @@
     $('#excelExportButton').click(function () {
         $('#jqxgrid').jqxGrid('exportdata', 'xls', 'jqxGrid');
     }); 
+
 
 
     function getTimeFromMins(mins) {

@@ -1,171 +1,280 @@
-﻿<div id="timeSheetManagementPanel">
+﻿<style>
+    
+
+  
+     .panel-title{
+         font-size:larger;
+         
+     }
+ 
+</style>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<div id="timeSheetManagementPanel">
     <div class="row">
         <div class="col-md-12">
             <div class="panel  panel-primary">
                 <div class="panel-heading">
-                    <div class="panel-title"><h3></h3></div>
+                    <div class="panel-title">Past three months Timesheets
+                    
+                        <select id="selectByMonth" name="selectByMonth" class="form-control input-lg"></select>
+
+                   @*<button type="button" class="btn btn highlight " data-toggle="collapse" data-target="#timeSheetDetailDataTable">View All</button>*@
+                       
                 </div>
             </div><!-- ending the div panel here -->
         </div>
     </div>
+        </div>
 
     <div class="row">
         <span style="float:right;margin-bottom:15px;">
 
         </span>
-        <div id="no-more-tables">
-            <table id="timeSheetDetailDataTable"
-                   class="col-md-12 table-bordered table-striped table-condensed cf table-responsive ">
-                <thead class="cf">
-                    <tr>
-                        <th style="width:3%"></th>
-                        <th style="width:10%">Account</th>
-                        <th style="width:3%">Lesson Date</th>
-                        <th style="width:5%">Start Time</th>
-                        <th style="width:5%">End Time</th>
-                        <th style="width:5%">Session Synopsis</th>
-                        <th style="width:5%">Created By</th>
-                        @*<th style="width:5%">Status</th>*@
 
-                    </tr>
-                </thead>
-                <tbody id="timeSheetDetailDataTableBody">
-                    <tr v-for="timeSheetDetail in timeSheetDetailData">
-                        <td data-title="Actions">
-                            <div class="btn-group btn-group - xs dropup">
-                                <button type="button" class="btn btn-default dropdown-toggle row-action-button" data-toggle="dropdown" aria- haspopup="true" aria-expanded="false">
-                                    <i class="material-icons">menu</i>
-                                    <span class="sr-only">Toggle Dropdown</span>
-                                </button>
 
-                            </div>
-                        </td>
-                        <td data-title="Account">{{timeSheetDetail.customerAccountName}}</td>
-                        <td data-title="Lesson date">{{moment(timeSheetDetail.dateOfLesson).format("DD/MM/YYYY dddd")}}</td>
-                        <td data-title="Official time in">{{timeSheetDetail.officialTimeInHHMM}}</td>
-                        <td data-title="Official time out">{{timeSheetDetail.officialTimeOutHHMM}}</td>
-                        @*<td data-title="Session Synopsis">{{timeSheetDetail.sessionSynopsis}}</td>*@
-                        @*//    <td data-title="status">{{timeSheetDetail.status}}</td>*@
 
-                    </tr>
-                </tbody>
-            </table>
+     
 
+            <div id="no-more-tables">
+                <table id="timeSheetDetailDataTable"
+                       class="col-md-12 table-bordered table-striped table-condensed cf table-responsive ">
+                    <thead class="cf">
+                        <tr>
+                            <th style="width:5%">Month and Year</th>
+                            <th style="width:10%">Account</th>
+                            <th style="width:3%">Lesson Date</th>
+                            <th style="width:5%">Actual Time In</th>
+                            <th style="width:5%">Actual Time Out</th>
+                    
+                        </tr>
+                    </thead>
+                    <tbody id="timeSheetDetailDataTableBody" class="timeSheetDetailDataTableBody">
+                        <tr v-for="timeSheetDetail in timeSheetDetailData">
+       
+                            <td data-title="Month and Year">{{moment(timeSheetDetail.dateOfLesson).format("MMMM/YYYY")}}</td>
+                            <td data-title="Account">{{timeSheetDetail.customerAccountName}}</td>
+                            <td data-title="Lesson date">{{moment(timeSheetDetail.dateOfLesson).format("DD/MM/YYYY dddd")}}</td>
+                            <td data-title="Actual Time In">{{timeSheetDetail.actualTimeInHHMM}}</td>
+                            <td data-title="Actual Time Out">{{timeSheetDetail.actualTimeOutHHMM}}</td>
+                      
+                         
+
+                        </tr>
+                    </tbody>
+                </table>
+
+            </div>
         </div>
+
+
     </div>
-
-
-</div>
-@section scripts{
-    <!-- Material Design fonts -->
-    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Roboto:300,400,500,700">
-    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/icon?family=Material+Icons">
-    <link href="~/lib/bootstrap-material-design/dist/css/bootstrap-material-design.css" rel="stylesheet" />
-    <link href="~/lib/bootstrap-material-design/dist/css/ripples.css" rel="stylesheet" />
-    <script src="https://unpkg.com/vue/dist/vue.js"></script>
-    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    <script src="~/lib/bootstrap-material-design/dist/js/material.js"></script>
-    <script src="~/lib/bootstrap-material-design/dist/js/ripples.js"></script>
-    <script>
+    @section scripts{
+        <!-- Material Design fonts -->
+        <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Roboto:300,400,500,700">
+        <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/icon?family=Material+Icons">
+        <link href="~/lib/bootstrap-material-design/dist/css/bootstrap-material-design.css" rel="stylesheet" />
+        <link href="~/lib/bootstrap-material-design/dist/css/ripples.css" rel="stylesheet" />
+        <script src="https://unpkg.com/vue/dist/vue.js"></script>
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+        <script src="~/lib/bootstrap-material-design/dist/js/material.js"></script>
+        <script src="~/lib/bootstrap-material-design/dist/js/ripples.js"></script>
+        <script>
 
 
 
 
-        //Reference: http://fezvrasta.github.io/bootstrap-material-design/#getting-started
-        $.material.init(); //Surprisingly, I need to place this command here so that it can work.
-        function getPerviousMonthName() {
-            var monthNameList = ["January", "February", "March", "April", "May", "June",
-                "July", "August", "September", "October", "November", "December"
-            ];
-            var previousMonthDate = new Date();
+            //Reference: http://fezvrasta.github.io/bootstrap-material-design/#getting-started
+            //$.material.init(); //Surprisingly, I need to place this command here so that it can work.
+            function getPerviousMonthName(previousMonthDate) {
+                var monthNameList = ["Select","January", "February", "March", "April", "May", "June",
+                    "July", "August", "September", "October", "November", "December"
+                ];
+                var previousMonthDate = new Date(previousMonthDate);
 
-            return monthNameList[previousMonthDate.getMonth()];
-        }
+                return monthNameList[previousMonthDate.getMonth()+1];
+            }
 
-        // console.dir(monthNameList)
+            // for the weekDayName
+            function getDay(weekDayName) { 
 
-        //$(document).ready(function () {
+                var weekday = new Array(7);
+                weekday[0] = "Sunday";
+                weekday[1] = "Monday";
+                weekday[2] = "Tuesday";
+                weekday[3] = "Wednesday";
+                weekday[4] = "Thursday";
+                weekday[5] = "Friday";
+                weekday[6] = "Saturday";
+
+                var _dte = new Date(weekDayName);
+                return weekday[_dte.getDay()];
+            }
+
+            var vm = new Vue({
+                el: '#timeSheetManagementPanel',
+                data: {
+                    timeSheetDetailData: {
+
+                        timeSheetDetailId: '',
+                        dateOfLesson: '',
+                        customerAccountName: '',
+                        actualTimeInHHMM: '',
+                        actualTimeOutHHMM: '',
+
+                    },
+                    moment: moment,
 
 
-
-        //});
-
-
-
-        var vm = new Vue({
-            el: '#timeSheetManagementPanel',
-            data: {
-                timeSheetMonth: getPerviousMonthName(),
-                timeSheetYear: new Date().getFullYear(),
-                timeSheetDetailData: {
-
-                    timeSheetDetailId: '',
-                    dateOfLesson: '',
-                    customerAccountName: '',
-                    officialTimeInHHMM: '',
-                    officialTimeOutHHMM: '',
 
                 },
+                mounted: function () {
+                    this.loadTimeSheetDetailData();
 
-                moment: moment,
+                    //Load the timesheetdetail of the particular month in the change 
+                    $("#selectByMonth" ).change(function () { loadTimeSheetDetailDataByMonth(); });
+                },
+
+                methods: {
+
+
+                    loadTimeSheetDetailData: function () {
+                        var that = this;
+                        $requestTracker = jQuery.ajax({
+                            type: 'GET',
+                            beforeSend: function (xhr) {
+                                xhr.setRequestHeader('RequestVerificationToken', $('input[name=__RequestVerificationToken]').val());
+                            },
+                            url: '/API/TimeInTimeOutData/GetPervioustMonthTimeSheetDataAndConfiguration',
+                            dataType: 'json',
+                           // data: { Month: $('#selectByMonth').val() },
+                            contentType: 'application/x-www-form-urlencoded',
+                            cache: false
+                        });
+                        $requestTracker.done(function (data) {
+
+                            that.$root._data.timeSheetDetailData = data.timeSheetDetails;
+                            console.dir(data);
+
+                            var selectByMonth = $('#selectByMonth');
+
+                            var $optionElement = '';
+                            $optionElement = $('<option>')
+                                .text('View All')
+                                .attr('value', '0');
+                            selectByMonth.append($optionElement);
+
+
+                            // dropdown
+                            for (var i = 0; i < data.timeSheetDetails.length; i++) {
+                                var option = $("<option/>");
+                                var dta = data.timeSheetDetails[i].dateOfLesson;
+                             
+                                var weekDayName = new Date(data.timeSheetDetails[i].dateOfLesson);
+                                var dateMonth = weekDayName.getMonth() + 1;
+                         
+                                $optionElement = $('<option>')
+                                    .text(getPerviousMonthName(dta))
+                                    .attr('value', dateMonth);
+                                if (selectByMonth.find('option[value="' + dateMonth + '"]').length == 0) {
+                                    selectByMonth.append($optionElement);
+                                }
+                            }
 
 
 
-            },
-            mounted: function () {
-                this.loadTimeSheetDetailData();
-            },
-            methods: {
+                        });
 
-                //getWeekDayName: function (inWeedDayNumber) {
-                //    var dayNameList = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday',
-                //        'Saturday'];
-                //    console.log(dayNameList[inWeedDayNumber]);
-                //    return dayNameList[inWeedDayNumber];
-                //},
-                //getTimeFromMins: function (mins) {
-                //    //https://stackoverflow.com/questions/36035598/how-to-convert-minutes-to-hours-using-moment-js
-                //    // Do not include the first validation check if you want, for example,
-                //    // getTimeFromMins(1530) to equal getTimeFromMins(90) (i.e. mins rollover)
-                //    if (mins >= 24 * 60 || mins < 0) {
-                //        throw new RangeError("Valid input should be greater than or equal to 0 and less than 1440.");
-                //    }
-                //    var h = mins / 60 | 0,
-                //        m = mins % 60 | 0;
-                //    return moment.utc().hours(h).minutes(m).format("hh:mm A");
-                //},
-
-                loadTimeSheetDetailData: function () {
-                    var that = this;
-                    $requestTracker = jQuery.ajax({
-                        type: 'GET',
-                        beforeSend: function (xhr) {
-                            xhr.setRequestHeader('RequestVerificationToken', $('input[name=__RequestVerificationToken]').val());
-                        },
-                        url: '/API/TimeInTimeOutData/GetPervioustMonthTimeSheetDataAndConfiguration',
-                        dataType: 'json',
-                        contentType: 'application/x-www-form-urlencoded'
-                    });
-                    $requestTracker.done(function (data) {
-
-                        that.$root._data.timeSheetDetailData = data.timeSheetDetails;
-                        console.dir(data);
-                        //console.dir(data.timeSheetDetail);
-                    });
-
+                    }
                 }
+            });
+
+         // this function will be called when the values in the dropdown change
+            function loadTimeSheetDetailDataByMonth() {
+            
+                var that = this;
+                var $requestTracker = jQuery.ajax({
+                    type: 'GET',
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader('RequestVerificationToken', $('input[name=__RequestVerificationToken]').val());
+                    },
+                    url: '/API/TimeInTimeOutData/GetPervioustMonthTimeSheetDataAndConfiguration',
+
+
+                    data: { Month: $('#selectByMonth').val() },
+
+                    dataType: 'json',
+                    contentType: 'application/x-www-form-urlencoded',
+                    cache: false
+                });
+                $requestTracker.done(function (data) {
+                  
+                    that.timeSheetDetailData = data.timeSheetDetails;
+                    console.dir(data);
+
+
+                    $("#timeSheetDetailDataTableBody").html(data);
+
+
+                    //binding the values from controller in view 
+                    var index = 0;
+
+                    for (index = 0; index < data.timeSheetDetails.length; index++) {
+                        var oneData = data.timeSheetDetails[index];
+                        var dateLesson = new Date(oneData.dateOfLesson);
+
+                       
+
+                        var formattedlessondate = dateLesson.getDate() + '/' + (dateLesson.getMonth() + 1) + '/' + dateLesson.getFullYear() + ' ' + getDay(oneData.dateOfLesson);
+                        $("#timeSheetDetailDataTableBody").append(
+                            '<tr><td data-title="Month and Year">' + getPerviousMonthName(oneData.dateOfLesson) + '/' + dateLesson.getFullYear() + '</td>' +
+                            '<td data-title="Account">' + oneData.customerAccountName + '</td>'+ 
+                            '<td data-title="Lesson date">' + formattedlessondate + '</td>' + 
+                            '<td data-title="Actual Time In">' + oneData.actualTimeInHHMM + '</td>' + 
+                            '<td data-title="Actual Time Out">' + oneData.actualTimeOutHHMM + '</td>' + 
+                            '</tr >'
+
+                        );
+
+                    }                       
+
+                  
+
+
+                });
+
+                $requestTracker.fail(function (data) {
+                    // reject(data);
+                })
+
+
             }
-        });
-
-
-
-             //   $('#timeSheetDetailDataTable td:nth-child(1)').hide();//Hiding first column which display record id numbers
-           //     $('#timeSheetDetailDataTable th:nth-child(1)').hide();//Hiding first column which display record id numbers
 
 
 
 
 
+            function setMonth(data)
+            {
+           
+                var $accountNameInputElement = $('#accountNameInput');
 
-    </script>
-}
+                var $optionElement = '';
+
+
+
+                $optionElement = $('<option>')
+                    .text(data)
+                    .attr('value', data);
+                    $accountNameInputElement.append($optionElement);
+
+            }
+
+
+
+                
+
+
+
+        </script>
+    }
